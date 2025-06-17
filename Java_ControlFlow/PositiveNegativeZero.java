@@ -1,0 +1,27 @@
+package ControlFlow;
+
+import java.util.Scanner;
+
+public class PositiveNegativeZero {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		int n;
+		Scanner input = new Scanner(System.in);
+		n = input.nextInt();
+		
+		if(n>0) {
+			System.out.println("Postive");
+		}
+		else if(n<0) {
+			System.out.println("Negative");
+		}
+		else {
+			System.out.println("Zero");
+		}
+		
+		input.close();
+	}
+
+}
