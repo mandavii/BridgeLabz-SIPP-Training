@@ -1,0 +1,12 @@
+package ControlFlow;
+
+public class ForLoopCountDown {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		for (int counter = countdownStart; counter >= 1; counter--) {
+            // 3. Inside a for loop, print the value of the counter
+            System.out.println(counter + "..."); }
+	}
+
+}

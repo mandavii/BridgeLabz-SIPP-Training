@@ -1,0 +1,15 @@
+
+
+import java.util.Scanner;
+public class OddEvenArrays {
+
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		Scanner inputScanner = new Scanner(System.in);
+		int n;
+
+	}
+
+}

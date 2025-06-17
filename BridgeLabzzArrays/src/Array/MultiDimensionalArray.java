@@ -1,0 +1,73 @@
+package Array;
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class MultiDimensionalArray {
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.print("Enter the number of rows for the 2D array: ");
+		int rows;
+		try {
+			rows = scanner.nextInt();
+		} catch (java.util.InputMismatchException e) {
+			System.err.println("Invalid input. Please enter an integer.");
+			scanner.close();
+			return;
+		}
+
+		System.out.print("Enter the number of columns for the 2D array: ");
+		int columns;
+		try {
+			columns = scanner.nextInt();
+		} catch (java.util.InputMismatchException e) {
+			System.err.println("Invalid input. Please enter an integer.");
+			scanner.close();
+			return;
+		}
+
+		if (rows <= 0 || columns <= 0) {
+			System.err.println("Error: Rows and columns must be positive integers.");
+			scanner.close();
+			return;
+		}
+
+		int[][] matrix = new int[rows][columns];
+
+		System.out.println("Enter the elements of the " + rows + "x" + columns + " matrix:");
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				System.out.print("Enter element at [" + i + "][" + j + "]: ");
+				try {
+					matrix[i][j] = scanner.nextInt();
+				} catch (java.util.InputMismatchException e) {
+					System.err.println("Invalid input. Please enter an integer.");
+					scanner.next();
+					j--;
+				}
+			}
+		}
+
+		System.out.println("\n--- Your 2D Array (Matrix) ---");
+		for (int i = 0; i < rows; i++) {
+			System.out.println(Arrays.toString(matrix[i]));
+		}
+
+		int[] singleDimensionArray = new int[rows * columns];
+		int index = 0;
+
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				singleDimensionArray[index] = matrix[i][j];
+				index++;
+			}
+		}
+
+		System.out.println("\n--- Copied 1D Array ---");
+		System.out.println(Arrays.toString(singleDimensionArray));
+
+		scanner.close();
+	}
+}

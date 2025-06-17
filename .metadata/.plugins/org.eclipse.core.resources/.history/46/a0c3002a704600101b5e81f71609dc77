@@ -1,0 +1,16 @@
+import java.util.Scanner;
+
+public class ques4 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		Scanner input = new Scanner(System.in);
+		System.out.println("r");
+		double radius = input.nextDouble();
+		double area = Math.PI * Math.pow(radius, 2);
+		System.out.println(area);
+		input.close();
+	}
+
+}
