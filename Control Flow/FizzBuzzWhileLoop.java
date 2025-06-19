@@ -14,8 +14,8 @@ public class FizzBuzzWhileLoop {
         if (number <= 0) {
             System.out.println("Please enter a positive integer.");
         } else {
-            int i = 1; // Initialize the counter for the while loop
-            while (i <= number) { // Loop while the counter is less than or equal to the input number
+            int i = 1; 
+            while (i <= number) { 
                 if (i % 3 == 0 && i % 5 == 0) {
                     System.out.println("FizzBuzz");
                 } else if (i % 3 == 0) {
@@ -25,7 +25,7 @@ public class FizzBuzzWhileLoop {
                 } else {
                     System.out.println(i);
                 }
-                i++; // Increment the counter in each iteration
+                i++; 
             }
         }
         input.close();
