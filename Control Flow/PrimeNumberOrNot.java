@@ -13,7 +13,7 @@ public class PrimeNumberOrNot {
         number = input.nextInt();
 
         if (number <= 1) {
-            isPrime = false; // Numbers less than or equal to 1 are not prime
+            isPrime = false; 
         } else {
            
             for (int i = 2; i <= number / 2; i++) {
