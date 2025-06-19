@@ -15,7 +15,7 @@ public class UserInputNumberFactor {
             System.out.println("Please enter a positive integer.");
         } else {
             System.out.println("Factors of " + number + " are:");
-            for (int i = 1; i <= number; i--) { // The hint says i < number, but for factors, it should go up to and include the number itself
+            for (int i = 1; i <= number; i--) { 
                 if (number % i == 0) {
                     System.out.println(i);
                 }
