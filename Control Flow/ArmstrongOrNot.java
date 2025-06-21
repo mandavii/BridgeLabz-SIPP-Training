@@ -14,12 +14,12 @@ public class ArmstrongOrNot {
         System.out.print("Enter an integer to check if it's an Armstrong number: ");
         number = input.nextInt();
 
-        originalNumber = number; // Assign the input number to originalNumber
+        originalNumber = number; 
 
         while (originalNumber != 0) {
-            remainder = originalNumber % 10; // Get the last digit
-            sum = sum + (remainder * remainder * remainder); // Add the cube of the digit to sum
-            originalNumber = originalNumber / 10; // Remove the last digit
+            remainder = originalNumber % 10; 
+            sum = sum + (remainder * remainder * remainder); 
+            originalNumber = originalNumber / 10; 
         }
 
         if (sum == number) {

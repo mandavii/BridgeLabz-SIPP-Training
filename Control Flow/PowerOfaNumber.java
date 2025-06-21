@@ -17,11 +17,11 @@ public class PowerOfaNumber {
         System.out.print("Enter the exponent (power): ");
         power = input.nextInt();
 
-        // Handle edge cases for power
+        
         if (power < 0) {
             System.out.println("Power cannot be negative for this calculation.");
         } else if (power == 0) {
-            // Any non-zero number to the power of 0 is 1. 0^0 is undefined but often treated as 1.
+        
             System.out.println(number + " to the power of " + power + " is: 1");
         } else {
             while (counter < power) {

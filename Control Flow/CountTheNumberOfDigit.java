@@ -12,15 +12,15 @@ public class CountTheNumberOfDigit {
         System.out.print("Enter an integer to count its digits: ");
         number = input.nextInt();
 
-        // Handle the case of 0 separately as the loop won't run for it
+        
         if (number == 0) {
             count = 1; // 0 has one digit
         } else {
-            // Use absolute value to handle negative numbers correctly
+            
             int tempNumber = Math.abs(number);
             while (tempNumber != 0) {
-                tempNumber = tempNumber / 10; // Remove the last digit
-                count++; // Increase the count
+                tempNumber = tempNumber / 10; 
+                count++; 
             }
         }
 
