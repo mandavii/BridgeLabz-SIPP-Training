@@ -2,11 +2,11 @@ import java.util.Scanner;
 
 public class CharFrequencyUsingCharAt {
 
-    // Method to find the frequency of characters using charAt()
-    public static String[][] getCharacterFrequencies(String str) {
-        int[] freq = new int[256]; // ASCII range
 
-        // Step 1: Count frequencies
+    public static String[][] getCharacterFrequencies(String str) {
+        int[] freq = new int[256]; 
+
+    
         for (int i = 0; ; i++) {
             try {
                 char c = str.charAt(i);
@@ -16,8 +16,8 @@ public class CharFrequencyUsingCharAt {
             }
         }
 
-        // Step 2: Prepare result for only unique characters in input
-        String[][] result = new String[str.length()][2]; // max possible unique
+       
+        String[][] result = new String[str.length()][2]; 
         boolean[] added = new boolean[256];
         int count = 0;
 
@@ -35,7 +35,6 @@ public class CharFrequencyUsingCharAt {
             }
         }
 
-        // Step 3: Trim unused space in result array
         String[][] finalResult = new String[count][2];
         for (int i = 0; i < count; i++) {
             finalResult[i][0] = result[i][0];
@@ -45,7 +44,6 @@ public class CharFrequencyUsingCharAt {
         return finalResult;
     }
 
-    // Method to display the frequency table
     public static void displayFrequencies(String[][] data) {
         System.out.println("Char\tFrequency");
         for (String[] row : data) {
