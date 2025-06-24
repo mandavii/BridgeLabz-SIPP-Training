@@ -3,15 +3,14 @@ import java.util.Scanner;
 
 public class AnagramChecker {
 
-    // Method to check if two strings are anagrams
+    
     public static boolean isAnagram(String text1, String text2) {
-        // Step 1: Check length
+        
         if (getLength(text1) != getLength(text2)) {
             return false;
         }
 
-        // Step 2: Create and fill frequency arrays
-        int[] freq1 = new int[256]; // ASCII size
+        int[] freq1 = new int[256]; 
         int[] freq2 = new int[256];
 
         for (int i = 0; ; i++) {
@@ -25,7 +24,7 @@ public class AnagramChecker {
             }
         }
 
-        // Step 3: Compare both frequency arrays
+       
         for (int i = 0; i < 256; i++) {
             if (freq1[i] != freq2[i]) {
                 return false;
@@ -35,7 +34,6 @@ public class AnagramChecker {
         return true;
     }
 
-    // Helper method to calculate string length without using length()
     public static int getLength(String str) {
         int count = 0;
         try {

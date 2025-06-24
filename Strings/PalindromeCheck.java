@@ -2,7 +2,6 @@ import java.util.Scanner;
 
 public class PalindromeCheck {
 
-    //  Logic 1: Compare characters from start and end using loop
     public static boolean isPalindromeLoop(String text) {
         int start = 0;
         int end = getLength(text) - 1;
@@ -17,7 +16,6 @@ public class PalindromeCheck {
         return true;
     }
 
-    // Logic 2: Recursive palindrome check
     public static boolean isPalindromeRecursive(String text, int start, int end) {
         if (start >= end) {
             return true;
@@ -28,7 +26,6 @@ public class PalindromeCheck {
         return isPalindromeRecursive(text, start + 1, end - 1);
     }
 
-    //  Logic 3: Using char array and reversed char array
     public static boolean isPalindromeCharArray(String text) {
         char[] original = text.toCharArray();
         char[] reversed = reverseString(text);
@@ -41,7 +38,6 @@ public class PalindromeCheck {
         return true;
     }
 
-    // Method to reverse a string using charAt()
     public static char[] reverseString(String str) {
         int len = getLength(str);
         char[] reversed = new char[len];
@@ -52,7 +48,6 @@ public class PalindromeCheck {
         return reversed;
     }
 
-    // Method to calculate string length without using .length()
     public static int getLength(String str) {
         int count = 0;
         try {
@@ -65,7 +60,6 @@ public class PalindromeCheck {
         }
     }
 
-    // Display result
     public static void displayResult(boolean result, int logicNumber) {
         System.out.println("Logic " + logicNumber + ": " + (result ? "Palindrome" : "Not a Palindrome"));
     }
@@ -77,15 +71,12 @@ public class PalindromeCheck {
         System.out.print("Enter a text: ");
         String text = sc.nextLine();
 
-        // Logic 1
         boolean result1 = isPalindromeLoop(text);
         displayResult(result1, 1);
 
-        // Logic 2
         boolean result2 = isPalindromeRecursive(text, 0, getLength(text) - 1);
         displayResult(result2, 2);
 
-        // Logic 3
         boolean result3 = isPalindromeCharArray(text);
         displayResult(result3, 3);
     }

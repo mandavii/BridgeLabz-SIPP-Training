@@ -15,7 +15,7 @@ public class FrequencyUsingUniqueCharacters {
         }
     }
 
-    // Method to find unique characters in the string using charAt()
+    
     public static char[] getUniqueCharacters(String str) {
         int len = getLength(str);
         char[] unique = new char[len];
@@ -38,7 +38,6 @@ public class FrequencyUsingUniqueCharacters {
             }
         }
 
-        // Trim the array to actual unique count
         char[] result = new char[uniqueCount];
         for (int i = 0; i < uniqueCount; i++) {
             result[i] = unique[i];
@@ -46,11 +45,8 @@ public class FrequencyUsingUniqueCharacters {
         return result;
     }
 
-    // Method to find frequency of characters using unique characters
     public static String[][] getCharacterFrequencies(String str) {
-        int[] freq = new int[256]; // For all ASCII characters
-
-        // Count frequency using ASCII index
+        int[] freq = new int[256]; 
         for (int i = 0; ; i++) {
             try {
                 char c = str.charAt(i);
@@ -60,10 +56,8 @@ public class FrequencyUsingUniqueCharacters {
             }
         }
 
-        // Get unique characters
         char[] uniqueChars = getUniqueCharacters(str);
 
-        // Prepare result 2D array
         String[][] result = new String[uniqueChars.length][2];
         for (int i = 0; i < uniqueChars.length; i++) {
             result[i][0] = String.valueOf(uniqueChars[i]);
@@ -73,7 +67,6 @@ public class FrequencyUsingUniqueCharacters {
         return result;
     }
 
-    // Display result in tabular format
     public static void displayFrequencies(String[][] data) {
         System.out.println("Char\tFrequency");
         for (String[] row : data) {

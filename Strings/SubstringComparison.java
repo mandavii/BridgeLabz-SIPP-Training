@@ -2,7 +2,6 @@ import java.util.Scanner;
 
 public class SubstringComparison {
 
-    // Method to create substring using charAt()
     public static String substringWithCharAt(String text, int start, int end) {
         String result = "";
         for (int i = start; i < end && i < text.length(); i++) {
@@ -11,7 +10,6 @@ public class SubstringComparison {
         return result;
     }
 
-    // Method to compare two strings using charAt()
     public static boolean compareWithCharAt(String str1, String str2) {
         if (str1.length() != str2.length()) return false;
         for (int i = 0; i < str1.length(); i++) {
@@ -34,7 +32,6 @@ public class SubstringComparison {
         System.out.print("Enter end index: ");
         int end = scanner.nextInt();
 
-        // Generate substrings
         String manualSubstring = substringWithCharAt(text, start, end);
         String builtinSubstring = text.substring(start, Math.min(end, text.length()));
 

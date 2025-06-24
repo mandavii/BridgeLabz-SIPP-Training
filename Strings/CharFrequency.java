@@ -10,7 +10,7 @@ public class CharFrequency {
                 char currentChar = str.charAt(i);
                 boolean isUnique = true;
 
-                // Check if currentChar is already in 'unique' string
+                
                 for (int j = 0; ; j++) {
                     try {
                         if (unique.charAt(j) == currentChar) {
@@ -30,7 +30,6 @@ public class CharFrequency {
             }
         }
 
-        // Convert unique string to character array
         char[] uniqueChars = new char[unique.length()];
         for (int i = 0; i < unique.length(); i++) {
             uniqueChars[i] = unique.charAt(i);
@@ -41,7 +40,7 @@ public class CharFrequency {
 
     
     public static String[][] getCharacterFrequencies(String str) {
-        int[] frequency = new int[256]; // ASCII characters range
+        int[] frequency = new int[256]; 
 
         
         for (int i = 0; ; i++) {
@@ -53,7 +52,6 @@ public class CharFrequency {
             }
         }
 
-        // Get unique characters
         char[] uniqueChars = getUniqueCharacters(str);
 
         
@@ -67,7 +65,6 @@ public class CharFrequency {
         return result;
     }
 
-    // Method to display the 2D result array in tabular format
     public static void displayFrequencies(String[][] data) {
         System.out.println("Char\tFrequency");
         for (String[] row : data) {
