@@ -1,0 +1,87 @@
+package ClassAndObjects;
+
+class BankAccount { 
+    private String accountHolder;
+    private String accountNumber;
+    private double balance;
+
+    public BankAccount(String accountHolder, String accountNumber, double initialBalance) {
+        this.accountHolder = accountHolder;
+        this.accountNumber = accountNumber;
+        
+        if (initialBalance >= 0) {
+            this.balance = initialBalance;
+        } else {
+            this.balance = 0;
+            System.out.println("Warning: Initial balance cannot be negative. Setting to 0.");
+        }
+    }
+    
+    
+    
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount; 
+            System.out.println("Deposit of $" + String.format("%.2f", amount) + " successful.");
+            displayBalance(); 
+        } else {
+            System.out.println("Invalid deposit amount. Please enter a positive value.");
+        }
+    }
+
+    
+    
+    public void withdraw(double amount) {
+        if (amount <= 0) {
+            System.out.println("Invalid withdrawal amount. Please enter a positive value.");
+            return;
+        }
+
+        if (balance >= amount) {
+            balance -= amount; 
+            System.out.println("Withdrawal of $" + String.format("%.2f", amount) + " successful.");
+            displayBalance(); 
+        } else {
+            System.out.println("Insufficient funds. Available balance: $" + String.format("%.2f", balance));
+        }
+    }
+
+    public void displayBalance() {
+   
+        System.out.println("Account Holder: " + accountHolder);
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Current Balance: $" + String.format("%.2f", balance)); // Format balance to two decimal places
+      
+    }
+}
+
+
+public class SimulateATM { 
+
+    public static void main(String[] args) {
+    	
+    	
+        BankAccount myAccount = new BankAccount("Alice Wonderland", "1234567890", 1000.00);
+
+        myAccount.displayBalance();
+
+        System.out.println("Deposit ");
+        myAccount.deposit(250.75);
+
+        System.out.println(" Withdrawal");
+        myAccount.withdraw(100.50);
+
+        System.out.println("Over-Withdrawal");
+        myAccount.withdraw(1500.00); 
+
+        System.out.println("Another Deposit");
+        myAccount.deposit(500.00);
+
+        myAccount.displayBalance();
+
+        System.out.println("Testing Edge Cases");
+        myAccount.deposit(0);
+       
+        myAccount.withdraw(-50);
+    }
+}
