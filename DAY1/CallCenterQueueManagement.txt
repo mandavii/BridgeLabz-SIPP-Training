@@ -1,0 +1,120 @@
+PSEUDOCODE: Call Center Queue Management
+
+// Call Center Queue Management with Priority System
+
+CLASS Customer:
+    ATTRIBUTES:
+        String name
+        String phoneNumber
+        String priority  // "normal" or "emergency"
+        int ticketNumber
+        String issueDescription
+    
+    CONSTRUCTOR(name, phoneNumber, priority, ticketNumber, issueDescription):
+        this.name = name
+        this.phoneNumber = phoneNumber
+        this.priority = priority
+        this.ticketNumber = ticketNumber
+        this.issueDescription = issueDescription
+    
+    METHOD displayCustomerInfo():
+        PRINT "Ticket #" + ticketNumber
+        PRINT "Name: " + name
+        PRINT "Phone: " + phoneNumber
+        PRINT "Priority: " + priority
+        PRINT "Issue: " + issueDescription
+
+CLASS PriorityQueue:
+    ATTRIBUTES:
+        Queue emergencyQueue  // High priority customers
+        Queue normalQueue      // Normal priority customers
+        int nextTicketNumber
+    
+    CONSTRUCTOR():
+        this.emergencyQueue = new Queue()
+        this.normalQueue = new Queue()
+        this.nextTicketNumber = 1
+    
+    METHOD addCustomer(name, phoneNumber, priority, issueDescription):
+        customer = new Customer(name, phoneNumber, priority, nextTicketNumber, issueDescription)
+        nextTicketNumber = nextTicketNumber + 1
+        
+        IF priority EQUALS "emergency":
+            ENQUEUE customer TO emergencyQueue
+            PRINT "Emergency customer added to priority queue"
+        ELSE:
+            ENQUEUE customer TO normalQueue
+            PRINT "Normal customer added to regular queue"
+    
+    METHOD serveNextCustomer():
+        IF NOT emergencyQueue IS EMPTY:
+            customer = DEQUEUE FROM emergencyQueue
+            PRINT "=== Serving Emergency Customer ==="
+            customer.displayCustomerInfo()
+            RETURN customer
+        ELSE IF NOT normalQueue IS EMPTY:
+            customer = DEQUEUE FROM normalQueue
+            PRINT "=== Serving Normal Customer ==="
+            customer.displayCustomerInfo()
+            RETURN customer
+        ELSE:
+            PRINT "No customers in queue"
+            RETURN null
+    
+    METHOD displayQueueStatus():
+        PRINT "=== Queue Status ==="
+        PRINT "Emergency Queue: " + SIZE(emergencyQueue) + " customers"
+        PRINT "Normal Queue: " + SIZE(normalQueue) + " customers"
+        PRINT "Next Ticket: " + nextTicketNumber
+    
+    METHOD displayAllCustomers():
+        PRINT "=== All Customers ==="
+        
+        IF NOT emergencyQueue IS EMPTY:
+            PRINT "\nEmergency Queue:"
+            FOR each customer IN emergencyQueue:
+                customer.displayCustomerInfo()
+                PRINT "---"
+        
+        IF NOT normalQueue IS EMPTY:
+            PRINT "\nNormal Queue:"
+            FOR each customer IN normalQueue:
+                customer.displayCustomerInfo()
+                PRINT "---"
+    
+    METHOD getQueueSize():
+        RETURN SIZE(emergencyQueue) + SIZE(normalQueue)
+
+MAIN PROGRAM:
+    callCenter = new PriorityQueue()
+    
+    PRINT "=== Call Center Queue Management ==="
+    
+    // Sample customers
+    callCenter.addCustomer("Alice Smith", "555-0101", "emergency", "Internet outage")
+    callCenter.addCustomer("Bob Johnson", "555-0102", "normal", "Billing question")
+    callCenter.addCustomer("Carol Davis", "555-0103", "emergency", "Service down")
+    callCenter.addCustomer("David Wilson", "555-0104", "normal", "New connection")
+    
+    callCenter.displayQueueStatus()
+    
+    // Serve customers
+    WHILE callCenter.getQueueSize() > 0:
+        PRINT "\nOptions: serve/display/exit"
+        READ choice
+        
+        SWITCH choice:
+            CASE "serve":
+                callCenter.serveNextCustomer()
+                callCenter.displayQueueStatus()
+                
+            CASE "display":
+                callCenter.displayAllCustomers()
+                
+            CASE "exit":
+                BREAK
+                
+            DEFAULT:
+                PRINT "Invalid option"
+    
+    PRINT "All customers served!"

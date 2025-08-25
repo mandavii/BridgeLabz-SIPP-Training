@@ -1,0 +1,163 @@
+PSEUDOCODE: Undo Feature in Text Editor
+
+// Undo Feature using Stack Data Structure
+
+CLASS UndoOperation:
+    ATTRIBUTES:
+        String operationType  // "insert", "delete", "replace"
+        String text
+        int position
+        String oldText  // for replace operations
+
+CLASS TextEditor:
+    ATTRIBUTES:
+        String currentText
+        Stack undoStack  // stores UndoOperation objects
+    
+    CONSTRUCTOR():
+        this.currentText = ""
+        this.undoStack = new Stack()
+    
+    METHOD insertText(text, position):
+        IF position < 0 OR position > LENGTH(currentText):
+            PRINT "Invalid position"
+            RETURN
+        
+        operation = new UndoOperation("insert", text, position, "")
+        PUSH operation to undoStack
+        
+        // Perform the insertion
+        leftPart = SUBSTRING(currentText, 0, position)
+        rightPart = SUBSTRING(currentText, position)
+        currentText = leftPart + text + rightPart
+        
+        PRINT "Inserted: '" + text + "' at position " + position
+    
+    METHOD deleteText(start, end):
+        IF start < 0 OR end > LENGTH(currentText) OR start > end:
+            PRINT "Invalid range"
+            RETURN
+        
+        deletedText = SUBSTRING(currentText, start, end)
+        operation = new UndoOperation("delete", deletedText, start, "")
+        PUSH operation to undoStack
+        
+        // Perform the deletion
+        leftPart = SUBSTRING(currentText, 0, start)
+        rightPart = SUBSTRING(currentText, end)
+        currentText = leftPart + rightPart
+        
+        PRINT "Deleted: '" + deletedText + "' from positions " + start + "-" + end
+    
+    METHOD replaceText(start, end, newText):
+        IF start < 0 OR end > LENGTH(currentText) OR start > end:
+            PRINT "Invalid range"
+            RETURN
+        
+        oldText = SUBSTRING(currentText, start, end)
+        operation = new UndoOperation("replace", newText, start, oldText)
+        PUSH operation to undoStack
+        
+        // Perform the replacement
+        leftPart = SUBSTRING(currentText, 0, start)
+        rightPart = SUBSTRING(currentText, end)
+        currentText = leftPart + newText + rightPart
+        
+        PRINT "Replaced: '" + oldText + "' with '" + newText + "'"
+    
+    METHOD undo():
+        IF undoStack IS EMPTY:
+            PRINT "Nothing to undo"
+            RETURN
+        
+        operation = POP from undoStack
+        
+        SWITCH operation.operationType:
+            CASE "insert":
+                // Remove inserted text
+                leftPart = SUBSTRING(currentText, 0, operation.position)
+                rightPart = SUBSTRING(currentText, operation.position + LENGTH(operation.text))
+                currentText = leftPart + rightPart
+                PRINT "Undo: Removed inserted text"
+                
+            CASE "delete":
+                // Restore deleted text
+                leftPart = SUBSTRING(currentText, 0, operation.position)
+                rightPart = SUBSTRING(currentText, operation.position)
+                currentText = leftPart + operation.text + rightPart
+                PRINT "Undo: Restored deleted text"
+                
+            CASE "replace":
+                // Restore old text
+                leftPart = SUBSTRING(currentText, 0, operation.position)
+                rightPart = SUBSTRING(currentText, operation.position + LENGTH(operation.text))
+                currentText = leftPart + operation.oldText + rightPart
+                PRINT "Undo: Restored original text"
+    
+    METHOD displayText():
+        PRINT "Current Text: '" + currentText + "'"
+
+MAIN PROGRAM:
+    editor = new TextEditor()
+    
+    PRINT "=== Text Editor with Undo Feature ==="
+    
+    // Demo operations
+    editor.insertText("Hello", 0)
+    editor.displayText()
+    
+    editor.insertText(" World", 5)
+    editor.displayText()
+    
+    editor.deleteText(5, 11)
+    editor.displayText()
+    
+    editor.undo()
+    editor.displayText()
+    
+    editor.replaceText(0, 5, "Hi")
+    editor.displayText()
+    
+    editor.undo()
+    editor.displayText()
+    
+    // Interactive mode
+    WHILE true:
+        PRINT "\nOptions: insert/delete/replace/undo/display/exit"
+        READ choice
+        
+        SWITCH choice:
+            CASE "insert":
+                PRINT "Enter text to insert:"
+                READ text
+                PRINT "Enter position:"
+                READ position
+                editor.insertText(text, position)
+                
+            CASE "delete":
+                PRINT "Enter start position:"
+                READ start
+                PRINT "Enter end position:"
+                READ end
+                editor.deleteText(start, end)
+                
+            CASE "replace":
+                PRINT "Enter start position:"
+                READ start
+                PRINT "Enter end position:"
+                READ end
+                PRINT "Enter new text:"
+                READ newText
+                editor.replaceText(start, end, newText)
+                
+            CASE "undo":
+                editor.undo()
+                
+            CASE "display":
+                editor.displayText()
+                
+            CASE "exit":
+                BREAK
+                
+            DEFAULT:
+                PRINT "Invalid option"

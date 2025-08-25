@@ -1,0 +1,94 @@
+PSEUDOCODE: Pet Adoption App
+
+// Pet Adoption App - OOP Design with Inheritance
+
+CLASS Pet:
+    ATTRIBUTES:
+        String name
+        int age
+        String breed
+        boolean isAdopted
+    
+    CONSTRUCTOR(name, age, breed):
+        this.name = name
+        this.age = age
+        this.breed = breed
+        this.isAdopted = false
+    
+    METHOD displayInfo():
+        PRINT "Name: " + name
+        PRINT "Age: " + age + " years"
+        PRINT "Breed: " + breed
+        PRINT "Status: " + (isAdopted ? "Adopted" : "Available")
+
+CLASS Dog EXTENDS Pet:
+    ATTRIBUTES:
+        String size  // small, medium, large
+        boolean isHouseTrained
+    
+    CONSTRUCTOR(name, age, breed, size, isHouseTrained):
+        super(name, age, breed)
+        this.size = size
+        this.isHouseTrained = isHouseTrained
+    
+    METHOD displayInfo():
+        super.displayInfo()
+        PRINT "Size: " + size
+        PRINT "House Trained: " + (isHouseTrained ? "Yes" : "No")
+
+CLASS Cat EXTENDS Pet:
+    ATTRIBUTES:
+        boolean isIndoorCat
+        String coatType  // short, medium, long
+    
+    CONSTRUCTOR(name, age, breed, isIndoorCat, coatType):
+        super(name, age, breed)
+        this.isIndoorCat = isIndoorCat
+        this.coatType = coatType
+    
+    METHOD displayInfo():
+        super.displayInfo()
+        PRINT "Indoor Cat: " + (isIndoorCat ? "Yes" : "No")
+        PRINT "Coat Type: " + coatType
+
+CLASS Bird EXTENDS Pet:
+    ATTRIBUTES:
+        boolean canTalk
+        String cageSize  // small, medium, large
+    
+    CONSTRUCTOR(name, age, breed, canTalk, cageSize):
+        super(name, age, breed)
+        this.canTalk = canTalk
+        this.cageSize = cageSize
+    
+    METHOD displayInfo():
+        super.displayInfo()
+        PRINT "Can Talk: " + (canTalk ? "Yes" : "No")
+        PRINT "Cage Size: " + cageSize
+
+MAIN PROGRAM:
+    CREATE petList as empty list
+    
+    // Create sample pets
+    dog1 = new Dog("Buddy", 3, "Golden Retriever", "Large", true)
+    cat1 = new Cat("Whiskers", 2, "Persian", true, "Long")
+    bird1 = new Bird("Charlie", 1, "Parrot", true, "Medium")
+    
+    ADD dog1, cat1, bird1 to petList
+    
+    // Display all pets
+    FOR each pet IN petList:
+        pet.displayInfo()
+        PRINT "------------------"
+    
+    // Adoption process
+    PRINT "Enter pet name to adopt:"
+    READ petName
+    
+    FOR each pet IN petList:
+        IF pet.name EQUALS petName AND pet.isAdopted IS false:
+            pet.isAdopted = true
+            PRINT "Successfully adopted " + petName
+            BREAK
+    
+    PRINT "Adoption complete!"

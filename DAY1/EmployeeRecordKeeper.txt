@@ -1,0 +1,190 @@
+PSEUDOCODE: Employee Record Keeper
+
+// Employee Record Keeper using ArrayList and Streams
+
+CLASS Employee:
+    ATTRIBUTES:
+        String name
+        String employeeID
+        String department
+        double salary
+        int yearsOfExperience
+    
+    CONSTRUCTOR(name, employeeID, department, salary, yearsOfExperience):
+        this.name = name
+        this.employeeID = employeeID
+        this.department = department
+        this.salary = salary
+        this.yearsOfExperience = yearsOfExperience
+    
+    METHOD displayEmployeeInfo():
+        PRINT "Employee Details:"
+        PRINT "Name: " + name
+        PRINT "ID: " + employeeID
+        PRINT "Department: " + department
+        PRINT "Salary: $" + salary
+        PRINT "Experience: " + yearsOfExperience + " years"
+
+CLASS EmployeeRecordKeeper:
+    ATTRIBUTES:
+        ArrayList<Employee> employees
+    
+    CONSTRUCTOR():
+        this.employees = new ArrayList<>()
+    
+    METHOD addEmployee(name, employeeID, department, salary, yearsOfExperience):
+        IF salary < 0 OR yearsOfExperience < 0:
+            PRINT "Invalid salary or experience"
+            RETURN
+        
+        employee = new Employee(name, employeeID, department, salary, yearsOfExperience)
+        employees.ADD(employee)
+        PRINT "Added employee: " + name
+    
+    METHOD getEmployeesByDepartment(targetDepartment):
+        filteredEmployees = employees.STREAM()
+            .FILTER(employee -> employee.department.EQUALS(targetDepartment))
+            .COLLECT_TO_LIST()
+        
+        RETURN filteredEmployees
+    
+    METHOD displayAllEmployees():
+        IF employees IS EMPTY:
+            PRINT "No employees in database"
+            RETURN
+        
+        PRINT "=== All Employees ==="
+        employees.STREAM()
+            .FOR_EACH(employee -> employee.displayEmployeeInfo())
+    
+    METHOD getEmployeesBySalaryRange(minSalary, maxSalary):
+        filteredEmployees = employees.STREAM()
+            .FILTER(employee -> employee.salary >= minSalary AND employee.salary <= maxSalary)
+            .COLLECT_TO_LIST()
+        
+        RETURN filteredEmployees
+    
+    METHOD getAverageSalaryByDepartment(department):
+        avgSalary = employees.STREAM()
+            .FILTER(employee -> employee.department.EQUALS(department))
+            .MAP_TO_DOUBLE(employee -> employee.salary)
+            .AVERAGE()
+            .OR_ELSE(0.0)
+        
+        RETURN avgSalary
+    
+    METHOD getHighestPaidEmployee():
+        IF employees IS EMPTY:
+            RETURN null
+        
+        highestPaid = employees.STREAM()
+            .MAX(COMPARING_BY_SALARY)
+            .OR_ELSE(null)
+        
+        RETURN highestPaid
+    
+    METHOD getSeniorEmployees(minExperience):
+        seniorEmployees = employees.STREAM()
+            .FILTER(employee -> employee.yearsOfExperience >= minExperience)
+            .COLLECT_TO_LIST()
+        
+        RETURN seniorEmployees
+    
+    METHOD getDepartmentSummary():
+        departmentCount = employees.STREAM()
+            .COLLECT_GROUPING_BY(employee -> employee.department, COUNTING())
+        
+        RETURN departmentCount
+    
+    METHOD sortEmployeesBySalary():
+        sortedEmployees = employees.STREAM()
+            .SORTED(DESCENDING_BY_SALARY)
+            .COLLECT_TO_LIST()
+        
+        RETURN sortedEmployees
+
+MAIN PROGRAM:
+    recordKeeper = new EmployeeRecordKeeper()
+    
+    PRINT "=== Employee Record Management ==="
+    
+    // Sample data
+    recordKeeper.addEmployee("Alice Johnson", "E001", "Engineering", 85000, 5)
+    recordKeeper.addEmployee("Bob Smith", "E002", "Marketing", 65000, 3)
+    recordKeeper.addEmployee("Carol Davis", "E003", "Engineering", 92000, 7)
+    recordKeeper.addEmployee("David Wilson", "E004", "Sales", 58000, 2)
+    recordKeeper.addEmployee("Eve Brown", "E005", "Engineering", 78000, 4)
+    recordKeeper.addEmployee("Frank Miller", "E006", "Marketing", 70000, 6)
+    
+    // Display all employees
+    recordKeeper.displayAllEmployees()
+    
+    // Filter by department
+    PRINT "\n=== Engineering Department ==="
+    engineeringEmployees = recordKeeper.getEmployeesByDepartment("Engineering")
+    FOR each employee IN engineeringEmployees:
+        employee.displayEmployeeInfo()
+    
+    // Get average salary by department
+    PRINT "\n=== Department Salary Analysis ==="
+    departments = ["Engineering", "Marketing", "Sales"]
+    FOR each dept IN departments:
+        avgSalary = recordKeeper.getAverageSalaryByDepartment(dept)
+        PRINT dept + " average salary: $" + avgSalary
+    
+    // Get highest paid employee
+    PRINT "\n=== Highest Paid Employee ==="
+    highestPaid = recordKeeper.getHighestPaidEmployee()
+    IF highestPaid IS NOT null:
+        highestPaid.displayEmployeeInfo()
+    
+    // Get senior employees (5+ years)
+    PRINT "\n=== Senior Employees (5+ years) ==="
+    seniorEmployees = recordKeeper.getSeniorEmployees(5)
+    FOR each employee IN seniorEmployees:
+        employee.displayEmployeeInfo()
+    
+    // Department summary
+    PRINT "\n=== Department Summary ==="
+    deptSummary = recordKeeper.getDepartmentSummary()
+    FOR each entry IN deptSummary:
+        PRINT entry.KEY + ": " + entry.VALUE + " employees"
+    
+    // Interactive mode
+    WHILE true:
+        PRINT "\nOptions: add/filter/dept/exit"
+        READ choice
+        
+        SWITCH choice:
+            CASE "add":
+                PRINT "Enter employee name:"
+                READ name
+                PRINT "Enter employee ID:"
+                READ id
+                PRINT "Enter department:"
+                READ dept
+                PRINT "Enter salary:"
+                READ salary
+                PRINT "Enter years of experience:"
+                READ experience
+                recordKeeper.addEmployee(name, id, dept, salary, experience)
+                
+            CASE "filter":
+                PRINT "Enter department to filter:"
+                READ dept
+                filteredEmployees = recordKeeper.getEmployeesByDepartment(dept)
+                PRINT "Employees in " + dept + ":"
+                FOR each employee IN filteredEmployees:
+                    employee.displayEmployeeInfo()
+                
+            CASE "dept":
+                PRINT "=== Department Summary ==="
+                summary = recordKeeper.getDepartmentSummary()
+                FOR each entry IN summary:
+                    PRINT entry.KEY + ": " + entry.VALUE + " employees"
+                
+            CASE "exit":
+                BREAK
+                
+            DEFAULT:
+                PRINT "Invalid option"

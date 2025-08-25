@@ -1,0 +1,160 @@
+PSEUDOCODE: Student Score Storage
+
+// Student Score Storage using HashMap and Streams
+
+CLASS StudentScoreManager:
+    ATTRIBUTES:
+        HashMap<String, Integer> studentScores  // studentName -> score
+    
+    CONSTRUCTOR():
+        this.studentScores = new HashMap<>()
+    
+    METHOD addStudentScore(name, score):
+        IF score < 0 OR score > 100:
+            PRINT "Invalid score. Must be between 0-100"
+            RETURN
+        
+        studentScores.PUT(name, score)
+        PRINT "Added " + name + " with score: " + score
+    
+    METHOD getHighestScorer():
+        IF studentScores IS EMPTY:
+            PRINT "No students in database"
+            RETURN null
+        
+        // Using streams to find highest scorer
+        maxEntry = studentScores.ENTRY_SET()
+            .STREAM()
+            .MAX(COMPARING_BY_VALUE)
+            .OR_ELSE(null)
+        
+        IF maxEntry IS NOT null:
+            PRINT "Highest Scorer: " + maxEntry.KEY + " with score: " + maxEntry.VALUE
+            RETURN maxEntry
+        
+        RETURN null
+    
+    METHOD getTopScorers(count):
+        IF studentScores IS EMPTY:
+            PRINT "No students in database"
+            RETURN empty list
+        
+        // Using streams to get top scorers
+        topScorers = studentScores.ENTRY_SET()
+            .STREAM()
+            .SORTED(DESCENDING_BY_VALUE)
+            .LIMIT(count)
+            .COLLECT_TO_LIST()
+        
+        RETURN topScorers
+    
+    METHOD displayAllScores():
+        IF studentScores IS EMPTY:
+            PRINT "No students in database"
+            RETURN
+        
+        PRINT "=== All Student Scores ==="
+        studentScores.ENTRY_SET()
+            .STREAM()
+            .SORTED(DESCENDING_BY_VALUE)
+            .FOR_EACH(entry -> 
+                PRINT entry.KEY + ": " + entry.VALUE
+            )
+    
+    METHOD getAverageScore():
+        IF studentScores IS EMPTY:
+            RETURN 0.0
+        
+        total = studentScores.VALUES()
+            .STREAM()
+            .REDUCE(0, (a, b) -> a + b)
+        
+        average = total / studentScores.SIZE()
+        RETURN average
+    
+    METHOD getStudentsAboveThreshold(threshold):
+        aboveThreshold = studentScores.ENTRY_SET()
+            .STREAM()
+            .FILTER(entry -> entry.VALUE >= threshold)
+            .COLLECT_TO_LIST()
+        
+        RETURN aboveThreshold
+    
+    METHOD getScoreRange():
+        IF studentScores IS EMPTY:
+            RETURN "0-0"
+        
+        minScore = studentScores.VALUES()
+            .STREAM()
+            .MIN()
+            .OR_ELSE(0)
+        
+        maxScore = studentScores.VALUES()
+            .STREAM()
+            .MAX()
+            .OR_ELSE(0)
+        
+        RETURN minScore + "-" + maxScore
+
+MAIN PROGRAM:
+    scoreManager = new StudentScoreManager()
+    
+    PRINT "=== Student Score Management ==="
+    
+    // Sample data
+    scoreManager.addStudentScore("Alice", 95)
+    scoreManager.addStudentScore("Bob", 87)
+    scoreManager.addStudentScore("Charlie", 92)
+    scoreManager.addStudentScore("Diana", 78)
+    scoreManager.addStudentScore("Eve", 96)
+    
+    scoreManager.displayAllScores()
+    
+    // Find highest scorer
+    PRINT "\nFinding highest scorer..."
+    scoreManager.getHighestScorer()
+    
+    // Get top 3 scorers
+    PRINT "\nTop 3 Scorers:"
+    top3 = scoreManager.getTopScorers(3)
+    FOR each entry IN top3:
+        PRINT entry.KEY + ": " + entry.VALUE
+    
+    // Get average score
+    PRINT "\nAverage Score: " + scoreManager.getAverageScore()
+    
+    // Get students above 90
+    PRINT "\nStudents above 90:"
+    highAchievers = scoreManager.getStudentsAboveThreshold(90)
+    FOR each entry IN highAchievers:
+        PRINT entry.KEY + ": " + entry.VALUE
+    
+    // Interactive mode
+    WHILE true:
+        PRINT "\nOptions: add/display/top/exit"
+        READ choice
+        
+        SWITCH choice:
+            CASE "add":
+                PRINT "Enter student name:"
+                READ name
+                PRINT "Enter score (0-100):"
+                READ score
+                scoreManager.addStudentScore(name, score)
+                
+            CASE "display":
+                scoreManager.displayAllScores()
+                
+            CASE "top":
+                PRINT "Enter number of top scorers to display:"
+                READ count
+                topList = scoreManager.getTopScorers(count)
+                PRINT "Top " + count + " scorers:"
+                FOR each entry IN topList:
+                    PRINT entry.KEY + ": " + entry.VALUE
+                
+            CASE "exit":
+                BREAK
+                
+            DEFAULT:
+                PRINT "Invalid option"

@@ -1,0 +1,75 @@
+PSEUDOCODE: Library Membership Tracker
+
+// Library Membership Tracker - Member Class Design
+
+CLASS Member:
+    ATTRIBUTES:
+        String name
+        String memberID
+        String membershipDate  // Format: YYYY-MM-DD
+        int membershipDuration  // in years
+    
+    CONSTRUCTOR(name, memberID, membershipDate):
+        this.name = name
+        this.memberID = memberID
+        this.membershipDate = membershipDate
+        this.membershipDuration = calculateDuration(membershipDate)
+    
+    METHOD calculateDuration(joinDate):
+        currentDate = GET_CURRENT_DATE()
+        joinDateObj = PARSE_DATE(joinDate)
+        duration = YEARS_BETWEEN(joinDateObj, currentDate)
+        RETURN duration
+    
+    METHOD isMembershipValid():
+        // Membership valid for 1 year from join date
+        IF membershipDuration <= 1:
+            RETURN true
+        ELSE:
+            RETURN false
+    
+    METHOD getMembershipStatus():
+        IF isMembershipValid():
+            daysRemaining = 365 - (membershipDuration * 365)
+            RETURN "Active - " + daysRemaining + " days remaining"
+        ELSE:
+            RETURN "Expired - Renew membership"
+    
+    METHOD displayMemberInfo():
+        PRINT "Member Details:"
+        PRINT "Name: " + name
+        PRINT "ID: " + memberID
+        PRINT "Joined: " + membershipDate
+        PRINT "Status: " + getMembershipStatus()
+        PRINT "Duration: " + membershipDuration + " year(s)"
+
+MAIN PROGRAM:
+    CREATE memberList as empty list
+    
+    // Add sample members
+    member1 = new Member("Alice Johnson", "M001", "2024-01-15")
+    member2 = new Member("Bob Smith", "M002", "2023-06-20")
+    member3 = new Member("Carol Davis", "M003", "2023-12-01")
+    
+    ADD member1, member2, member3 to memberList
+    
+    // Display all members
+    PRINT "=== Library Members ==="
+    FOR each member IN memberList:
+        member.displayMemberInfo()
+        PRINT "------------------"
+    
+    // Check specific member
+    PRINT "Enter member ID to check:"
+    READ searchID
+    
+    found = false
+    FOR each member IN memberList:
+        IF member.memberID EQUALS searchID:
+            PRINT "Member found!"
+            member.displayMemberInfo()
+            found = true
+            BREAK
+    
+    IF NOT found:
+        PRINT "Member not found!"
