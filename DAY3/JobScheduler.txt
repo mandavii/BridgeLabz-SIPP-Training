@@ -1,0 +1,130 @@
+PSEUDOCODE: Job Scheduler (Priority Queue)
+
+// Job Class
+CLASS Job:
+    jobId: string
+    jobName: string
+    deadline: integer
+    processingTime: integer
+    priority: integer
+    
+    CONSTRUCTOR(id, name, deadline, processingTime):
+        jobId = id
+        jobName = name
+        deadline = deadline
+        processingTime = processingTime
+        priority = calculatePriority()
+    
+    METHOD calculatePriority():
+        // Higher priority for closer deadlines and shorter processing times
+        return (deadline * 100) - processingTime
+    
+    METHOD getPriority():
+        return priority
+    
+    METHOD getDeadline():
+        return deadline
+    
+    METHOD getProcessingTime():
+        return processingTime
+    
+    METHOD toString():
+        RETURN "Job: " + jobName + " | Deadline: " + deadline + " | Processing: " + processingTime + " | Priority: " + priority
+
+// Priority Queue Implementation
+CLASS PriorityQueue:
+    jobs: LIST of Job
+    
+    CONSTRUCTOR():
+        jobs = EMPTY_LIST
+    
+    METHOD add(job: Job):
+        ADD job to jobs
+        SORT jobs by priority DESCENDING
+    
+    METHOD remove():
+        IF jobs is not empty:
+            RETURN REMOVE_FIRST(jobs)
+        RETURN null
+    
+    METHOD peek():
+        IF jobs is not empty:
+            RETURN jobs[0]
+        RETURN null
+    
+    METHOD isEmpty():
+        RETURN jobs is empty
+    
+    METHOD size():
+        RETURN length of jobs
+    
+    METHOD displayQueue():
+        PRINT "Current Job Queue:"
+        FOR each job in jobs:
+            PRINT job.toString()
+
+// Job Scheduler Manager
+CLASS JobScheduler:
+    queue: PriorityQueue
+    completedJobs: LIST of Job
+    
+    CONSTRUCTOR():
+        queue = NEW PriorityQueue()
+        completedJobs = EMPTY_LIST
+    
+    METHOD addJob(job: Job):
+        queue.add(job)
+        PRINT "Added job: " + job.jobName
+    
+    METHOD processNextJob():
+        IF queue.isEmpty():
+            PRINT "No jobs to process"
+            RETURN
+        
+        job = queue.remove()
+        PRINT "Processing job: " + job.jobName
+        
+        // Simulate processing time
+        WAIT job.processingTime * 100 milliseconds
+        
+        ADD job to completedJobs
+        PRINT "Completed job: " + job.jobName
+    
+    METHOD getUrgentJobs():
+        urgent = EMPTY_LIST
+        FOR each job in queue.jobs:
+            IF job.deadline <= 5:
+                ADD job to urgent
+        RETURN urgent
+    
+    METHOD displayStats():
+        PRINT "=== Job Statistics ==="
+        PRINT "Pending jobs: " + queue.size()
+        PRINT "Completed jobs: " + length of completedJobs
+        PRINT "Urgent jobs (deadline <= 5): " + length of getUrgentJobs()
+
+// Main Program
+MAIN():
+    scheduler = NEW JobScheduler()
+    
+    // Add sample jobs
+    jobs = [
+        NEW Job("J001", "Data Processing", 3, 2),
+        NEW Job("J002", "Report Generation", 5, 4),
+        NEW Job("J003", "Email Campaign", 1, 1),
+        NEW Job("J004", "Backup System", 7, 3),
+        NEW Job("J005", "Security Scan", 2, 2)
+    ]
+    
+    FOR each job in jobs:
+        scheduler.addJob(job)
+    
+    scheduler.queue.displayQueue()
+    
+    // Process jobs
+    WHILE not scheduler.queue.isEmpty():
+        scheduler.processNextJob()
+        scheduler.displayStats()
+        PRINT ""
+    
+    PRINT "All jobs completed!"

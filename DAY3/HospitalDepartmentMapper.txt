@@ -1,0 +1,114 @@
+PSEUDOCODE: Hospital Department Mapper
+
+// Doctor Class
+CLASS Doctor:
+    doctorId: string
+    name: string
+    specialization: string
+    department: string
+    
+    CONSTRUCTOR(id, name, specialization, department):
+        doctorId = id
+        name = name
+        specialization = specialization
+        department = department
+    
+    METHOD toString():
+        RETURN name + " (" + specialization + ") - " + department
+
+// Hospital Department Mapper
+CLASS HospitalDepartmentMapper:
+    departmentMap: MAP<String, LIST<Doctor>>
+    
+    CONSTRUCTOR():
+        departmentMap = EMPTY_MAP
+    
+    METHOD addDoctor(doctor: Doctor):
+        IF departmentMap contains doctor.department:
+            ADD doctor to departmentMap[doctor.department]
+        ELSE:
+            departmentMap[doctor.department] = NEW_LIST with doctor
+        
+        PRINT "Added " + doctor.name + " to " + doctor.department
+    
+    METHOD removeDoctor(doctorId: string, department: string):
+        IF departmentMap contains department:
+            FOR each doctor in departmentMap[department]:
+                IF doctor.doctorId == doctorId:
+                    REMOVE doctor from departmentMap[department]
+                    PRINT "Removed doctor " + doctorId + " from " + department
+                    RETURN
+        PRINT "Doctor not found"
+    
+    METHOD getDoctorsByDepartment(department: string):
+        IF departmentMap contains department:
+            RETURN departmentMap[department]
+        RETURN EMPTY_LIST
+    
+    METHOD getAllDepartments():
+        RETURN departmentMap.keySet()
+    
+    METHOD filterBySpecialization(specialization: string):
+        filteredDoctors = EMPTY_LIST
+        FOR each department in departmentMap.keySet():
+            FOR each doctor in departmentMap[department]:
+                IF doctor.specialization == specialization:
+                    ADD doctor to filteredDoctors
+        RETURN filteredDoctors
+    
+    METHOD displayDepartment(department: string):
+        doctors = getDoctorsByDepartment(department)
+        PRINT "=== " + department + " Department ==="
+        FOR each doctor in doctors:
+            PRINT "  " + doctor.toString()
+    
+    METHOD displayAllDepartments():
+        PRINT "=== All Hospital Departments ==="
+        FOR each department in getAllDepartments():
+            displayDepartment(department)
+            PRINT ""
+    
+    METHOD getDepartmentStats():
+        stats = EMPTY_MAP
+        FOR each department in departmentMap.keySet():
+            count = length of departmentMap[department]
+            stats[department] = count
+        RETURN stats
+
+// Main Program
+MAIN():
+    mapper = NEW HospitalDepartmentMapper()
+    
+    // Add sample doctors
+    doctors = [
+        NEW Doctor("D001", "Dr. Smith", "Cardiology", "Cardiology"),
+        NEW Doctor("D002", "Dr. Johnson", "Neurology", "Neurology"),
+        NEW Doctor("D003", "Dr. Williams", "Orthopedics", "Orthopedics"),
+        NEW Doctor("D004", "Dr. Brown", "Cardiology", "Cardiology"),
+        NEW Doctor("D005", "Dr. Davis", "Pediatrics", "Pediatrics"),
+        NEW Doctor("D006", "Dr. Miller", "Neurology", "Neurology"),
+        NEW Doctor("D007", "Dr. Wilson", "Orthopedics", "Orthopedics")
+    ]
+    
+    FOR each doctor in doctors:
+        mapper.addDoctor(doctor)
+    
+    // Display all departments
+    mapper.displayAllDepartments()
+    
+    // Filter by specialization
+    PRINT "=== Cardiologists ==="
+    cardiologists = mapper.filterBySpecialization("Cardiology")
+    FOR each doctor in cardiologists:
+        PRINT "  " + doctor.toString()
+    
+    PRINT "=== Neurologists ==="
+    neurologists = mapper.filterBySpecialization("Neurology")
+    FOR each doctor in neurologists:
+        PRINT "  " + doctor.toString()
+    
+    // Display department statistics
+    stats = mapper.getDepartmentStats()
+    PRINT "=== Department Statistics ==="
+    FOR each department in stats:
+        PRINT department + ": " + stats[department] + " doctors"

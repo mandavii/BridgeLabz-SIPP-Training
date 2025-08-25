@@ -1,0 +1,48 @@
+PSEUDOCODE: Traffic Signal Simulation
+
+// Enum for Traffic Light states
+ENUM TrafficLight:
+    RED
+    YELLOW  
+    GREEN
+
+// Traffic Light Controller Class
+CLASS TrafficLightController:
+    currentLight: TrafficLight
+    redDuration: integer = 30 seconds
+    yellowDuration: integer = 5 seconds
+    greenDuration: integer = 25 seconds
+    
+    CONSTRUCTOR():
+        currentLight = RED
+    
+    METHOD switchLight():
+        SWITCH currentLight:
+            CASE RED:
+                currentLight = GREEN
+                PRINT "Light switched to GREEN"
+                WAIT greenDuration seconds
+                
+            CASE GREEN:
+                currentLight = YELLOW
+                PRINT "Light switched to YELLOW"
+                WAIT yellowDuration seconds
+                
+            CASE YELLOW:
+                currentLight = RED
+                PRINT "Light switched to RED"
+                WAIT redDuration seconds
+    
+    METHOD getCurrentLight():
+        RETURN currentLight
+
+// Main Simulation
+MAIN():
+    controller = NEW TrafficLightController()
+    
+    FOR i = 1 to 10 cycles:
+        PRINT "Current light: " + controller.getCurrentLight()
+        controller.switchLight()
+        PRINT "-------------------"
+    
+    PRINT "Simulation complete"

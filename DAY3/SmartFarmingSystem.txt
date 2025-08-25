@@ -1,0 +1,104 @@
+PSEUDOCODE: Smart Farming System
+
+// Abstract Crop Class
+ABSTRACT CLASS Crop:
+    cropName: string
+    growthStage: string
+    waterLevel: integer
+    harvestTime: integer
+    
+    CONSTRUCTOR(name):
+        cropName = name
+        growthStage = "Seedling"
+        waterLevel = 0
+        harvestTime = 0
+    
+    ABSTRACT METHOD getWaterRequirement(): integer
+    ABSTRACT METHOD getHarvestTime(): integer
+    
+    METHOD waterCrop(amount: integer):
+        waterLevel = waterLevel + amount
+        PRINT cropName + " watered. Water level: " + waterLevel
+    
+    METHOD checkGrowth():
+        IF waterLevel >= getWaterRequirement():
+            growthStage = "Ready for harvest"
+            harvestTime = getHarvestTime()
+        ELSE:
+            growthStage = "Growing"
+    
+    METHOD harvest():
+        IF growthStage == "Ready for harvest":
+            PRINT cropName + " harvested successfully!"
+            RETURN true
+        ELSE:
+            PRINT cropName + " not ready for harvest"
+            RETURN false
+
+// Rice Implementation
+CLASS Rice EXTENDS Crop:
+    CONSTRUCTOR():
+        SUPER("Rice")
+    
+    METHOD getWaterRequirement():
+        RETURN 100
+    
+    METHOD getHarvestTime():
+        RETURN 120
+
+// Wheat Implementation  
+CLASS Wheat EXTENDS Crop:
+    CONSTRUCTOR():
+        SUPER("Wheat")
+    
+    METHOD getWaterRequirement():
+        RETURN 80
+    
+    METHOD getHarvestTime():
+        RETURN 90
+
+// Farm Management System
+CLASS FarmManager:
+    crops: LIST of Crop
+    
+    CONSTRUCTOR():
+        crops = EMPTY_LIST
+    
+    METHOD addCrop(crop: Crop):
+        ADD crop to crops
+        PRINT "Added " + crop.cropName + " to farm"
+    
+    METHOD waterAllCrops(amount: integer):
+        FOR each crop in crops:
+            crop.waterCrop(amount)
+    
+    METHOD checkAllCrops():
+        FOR each crop in crops:
+            crop.checkGrowth()
+            PRINT crop.cropName + " status: " + crop.growthStage
+    
+    METHOD harvestReadyCrops():
+        harvestedCount = 0
+        FOR each crop in crops:
+            IF crop.harvest():
+                harvestedCount = harvestedCount + 1
+        RETURN harvestedCount
+
+// Main Program
+MAIN():
+    farm = NEW FarmManager()
+    
+    riceCrop = NEW Rice()
+    wheatCrop = NEW Wheat()
+    
+    farm.addCrop(riceCrop)
+    farm.addCrop(wheatCrop)
+    
+    farm.waterAllCrops(50)
+    farm.checkAllCrops()
+    
+    farm.waterAllCrops(50)
+    farm.checkAllCrops()
+    
+    harvested = farm.harvestReadyCrops()
+    PRINT "Total crops harvested: " + harvested

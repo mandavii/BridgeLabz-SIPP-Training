@@ -1,0 +1,93 @@
+PSEUDOCODE: Online Quiz Timer
+
+// Circular Array Timer System
+CLASS QuizTimer:
+    MAX_QUESTIONS = 20
+    timeSlots: ARRAY[0..MAX_QUESTIONS-1] of integer
+    currentIndex: integer = 0
+    totalQuestions: integer = 0
+    warningThreshold: integer = 10 seconds
+    
+    CONSTRUCTOR():
+        FOR i = 0 to MAX_QUESTIONS-1:
+            timeSlots[i] = 0
+    
+    METHOD addQuestionTime(questionNumber: integer, timeLimit: integer):
+        IF totalQuestions < MAX_QUESTIONS:
+            index = questionNumber % MAX_QUESTIONS
+            timeSlots[index] = timeLimit
+            totalQuestions = totalQuestions + 1
+            PRINT "Added time limit for question " + questionNumber + ": " + timeLimit + " seconds"
+        ELSE:
+            PRINT "Maximum questions reached"
+    
+    METHOD startTimer(questionNumber: integer):
+        index = questionNumber % MAX_QUESTIONS
+        timeRemaining = timeSlots[index]
+        
+        IF timeRemaining <= 0:
+            PRINT "Invalid time for question " + questionNumber
+            RETURN
+        
+        WHILE timeRemaining > 0:
+            WAIT 1 second
+            timeRemaining = timeRemaining - 1
+            timeSlots[index] = timeRemaining
+            
+            IF timeRemaining == warningThreshold:
+                PRINT "⚠️ WARNING: Only " + warningThreshold + " seconds left for question " + questionNumber
+            
+            PRINT "Question " + questionNumber + " - Time remaining: " + timeRemaining + " seconds"
+        
+        PRINT "⏰ TIME'S UP for question " + questionNumber
+    
+    METHOD getTimeRemaining(questionNumber: integer):
+        index = questionNumber % MAX_QUESTIONS
+        RETURN timeSlots[index]
+    
+    METHOD resetQuestion(questionNumber: integer):
+        index = questionNumber % MAX_QUESTIONS
+        timeSlots[index] = 0
+        PRINT "Reset time for question " + questionNumber
+
+// Quiz Session Manager
+CLASS QuizSession:
+    timer: QuizTimer
+    currentQuestion: integer = 1
+    
+    CONSTRUCTOR():
+        timer = NEW QuizTimer()
+    
+    METHOD setupQuiz(questions: LIST of {number: integer, timeLimit: integer}):
+        FOR each question in questions:
+            timer.addQuestionTime(question.number, question.timeLimit)
+    
+    METHOD startQuestion(questionNumber: integer):
+        PRINT "Starting question " + questionNumber
+        timer.startTimer(questionNumber)
+    
+    METHOD skipQuestion(questionNumber: integer):
+        timer.resetQuestion(questionNumber)
+        PRINT "Skipped question " + questionNumber
+
+// Main Program
+MAIN():
+    quiz = NEW QuizSession()
+    
+    // Setup quiz with questions and time limits
+    questions = [
+        {number: 1, timeLimit: 30},
+        {number: 2, timeLimit: 45},
+        {number: 3, timeLimit: 60}
+    ]
+    
+    quiz.setupQuiz(questions)
+    
+    // Start quiz
+    FOR i = 1 to 3:
+        quiz.startQuestion(i)
+        IF i < 3:
+            PRINT "Moving to next question..."
+            WAIT 2 seconds
+    
+    PRINT "Quiz completed!"

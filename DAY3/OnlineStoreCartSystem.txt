@@ -1,0 +1,102 @@
+PSEUDOCODE: Online Store Cart System
+
+// Item Class
+CLASS Item:
+    name: string
+    price: double
+    quantity: integer
+    
+    CONSTRUCTOR(name, price, quantity):
+        this.name = name
+        this.price = price
+        this.quantity = quantity
+    
+    METHOD getTotalPrice():
+        RETURN price * quantity
+    
+    METHOD toString():
+        RETURN name + " - $" + price + " x " + quantity + " = $" + getTotalPrice()
+
+// Shopping Cart Class with Generic Method
+CLASS ShoppingCart:
+    items: LIST of Item
+    
+    CONSTRUCTOR():
+        items = EMPTY_LIST
+    
+    METHOD addItem(item: Item):
+        ADD item to items
+        PRINT "Added: " + item.name
+    
+    METHOD removeItem(itemName: string):
+        FOR each item in items:
+            IF item.name == itemName:
+                REMOVE item from items
+                PRINT "Removed: " + itemName
+                RETURN
+        PRINT "Item not found: " + itemName
+    
+    METHOD displayCart():
+        PRINT "=== Shopping Cart ==="
+        FOR each item in items:
+            PRINT item.toString()
+    
+    // Generic method to calculate total price
+    GENERIC METHOD calculateTotal<T>(list: LIST of T, priceExtractor: FUNCTION<T, double>):
+        total = 0.0
+        FOR each item in list:
+            total = total + priceExtractor(item)
+        RETURN total
+    
+    METHOD getCartTotal():
+        RETURN calculateTotal(items, FUNCTION(item) -> item.getTotalPrice())
+    
+    METHOD clearCart():
+        items = EMPTY_LIST
+        PRINT "Cart cleared"
+
+// Discount Calculator (Generic Method Example)
+CLASS DiscountCalculator:
+    METHOD applyDiscount<T>(items: LIST of T, discountRate: double, priceExtractor: FUNCTION<T, double>):
+        discountedItems = EMPTY_LIST
+        FOR each item in items:
+            originalPrice = priceExtractor(item)
+            discountedPrice = originalPrice * (1 - discountRate)
+            // Create new item with discounted price (implementation depends on item type)
+            ADD discountedItems
+        RETURN discountedItems
+
+// Main Program
+MAIN():
+    cart = NEW ShoppingCart()
+    
+    // Add items to cart
+    items = [
+        NEW Item("Laptop", 999.99, 1),
+        NEW Item("Mouse", 29.99, 2),
+        NEW Item("Keyboard", 79.99, 1),
+        NEW Item("Monitor", 299.99, 1)
+    ]
+    
+    FOR each item in items:
+        cart.addItem(item)
+    
+    cart.displayCart()
+    
+    total = cart.getCartTotal()
+    PRINT "Total price: $" + total
+    
+    // Apply 10% discount
+    discountRate = 0.10
+    discountedTotal = total * (1 - discountRate)
+    PRINT "Discounted total (10% off): $" + discountedTotal
+    
+    // Remove an item
+    cart.removeItem("Mouse")
+    cart.displayCart()
+    
+    newTotal = cart.getCartTotal()
+    PRINT "New total: $" + newTotal
+    
+    cart.clearCart()
+    cart.displayCart()
