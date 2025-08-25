@@ -1,0 +1,223 @@
+PSEUDOCODE: Library Book Filter (Streams & Lambdas)
+
+// Book Class
+CLASS Book:
+    title: string
+    author: string
+    isbn: string
+    publicationYear: integer
+    rating: double
+    genre: string
+    available: boolean
+    
+    CONSTRUCTOR(title, author, isbn, publicationYear, rating, genre):
+        title = title
+        author = author
+        isbn = isbn
+        publicationYear = publicationYear
+        rating = rating
+        genre = genre
+        available = true
+    
+    METHOD getTitle():
+        RETURN title
+    
+    METHOD getAuthor():
+        RETURN author
+    
+    METHOD getIsbn():
+        RETURN isbn
+    
+    METHOD getPublicationYear():
+        RETURN publicationYear
+    
+    METHOD getRating():
+        RETURN rating
+    
+    METHOD getGenre():
+        RETURN genre
+    
+    METHOD isAvailable():
+        RETURN available
+    
+    METHOD setAvailable(available: boolean):
+        available = available
+    
+    METHOD toString():
+        RETURN title + " by " + author + " (" + publicationYear + ") - Rating: " + rating + "/5.0"
+
+// Library Management System
+CLASS LibraryManagement:
+    books: LIST of Book
+    
+    CONSTRUCTOR():
+        books = EMPTY_LIST
+    
+    METHOD addBook(book: Book):
+        ADD book to books
+        PRINT "Book added: " + book.getTitle()
+    
+    METHOD removeBook(isbn: string):
+        book = books.stream()
+            .filter(b -> b.getIsbn().equals(isbn))
+            .findFirst()
+            .orElse(null)
+        
+        IF book:
+            REMOVE book from books
+            PRINT "Book removed: " + book.getTitle()
+            RETURN true
+        ELSE:
+            PRINT "Book not found with ISBN: " + isbn
+            RETURN false
+    
+    METHOD getAllBooks():
+        RETURN books
+    
+    METHOD getBooksByYear(minYear: integer):
+        RETURN books.stream()
+            .filter(book -> book.getPublicationYear() >= minYear)
+            .collect(toList())
+    
+    METHOD getBooksByRating(minRating: double):
+        RETURN books.stream()
+            .filter(book -> book.getRating() >= minRating)
+            .collect(toList())
+    
+    METHOD getBooksByGenre(genre: string):
+        RETURN books.stream()
+            .filter(book -> book.getGenre().equalsIgnoreCase(genre))
+            .collect(toList())
+    
+    METHOD getBooksByAuthor(author: string):
+        RETURN books.stream()
+            .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
+            .collect(toList())
+    
+    METHOD getAvailableBooks():
+        RETURN books.stream()
+            .filter(book -> book.isAvailable())
+            .collect(toList())
+    
+    METHOD getBooksByYearAndRating(minYear: integer, minRating: double):
+        RETURN books.stream()
+            .filter(book -> book.getPublicationYear() >= minYear)
+            .filter(book -> book.getRating() >= minRating)
+            .collect(toList())
+    
+    METHOD getBooksSortedByRating():
+        RETURN books.stream()
+            .sorted((b1, b2) -> Double.compare(b2.getRating(), b1.getRating()))
+            .collect(toList())
+    
+    METHOD getBooksSortedByYear():
+        RETURN books.stream()
+            .sorted((b1, b2) -> Integer.compare(b2.getPublicationYear(), b1.getPublicationYear()))
+            .collect(toList())
+    
+    METHOD getAverageRating():
+        IF books.isEmpty():
+            RETURN 0.0
+        
+        average = books.stream()
+            .mapToDouble(book -> book.getRating())
+            .average()
+            .orElse(0.0)
+        
+        RETURN average
+    
+    METHOD getBooksCountByGenre():
+        genreCount = books.stream()
+            .collect(groupingBy(Book::getGenre, counting()))
+        
+        RETURN genreCount
+    
+    METHOD getTopRatedBooks(limit: integer):
+        RETURN books.stream()
+            .sorted((b1, b2) -> Double.compare(b2.getRating(), b1.getRating()))
+            .limit(limit)
+            .collect(toList())
+    
+    METHOD searchBooks(keyword: string):
+        RETURN books.stream()
+            .filter(book -> 
+                book.getTitle().toLowerCase().contains(keyword.toLowerCase()) OR
+                book.getAuthor().toLowerCase().contains(keyword.toLowerCase()) OR
+                book.getGenre().toLowerCase().contains(keyword.toLowerCase())
+            )
+            .collect(toList())
+    
+    METHOD getBooksInYearRange(startYear: integer, endYear: integer):
+        RETURN books.stream()
+            .filter(book -> 
+                book.getPublicationYear() >= startYear AND 
+                book.getPublicationYear() <= endYear
+            )
+            .collect(toList())
+    
+    METHOD printBooks(books: LIST of Book, title: string):
+        PRINT "=== " + title + " ==="
+        IF books.isEmpty():
+            PRINT "No books found"
+        ELSE:
+            FOR each book in books:
+                PRINT book.toString()
+        PRINT ""
+
+// Main Program
+MAIN():
+    library = NEW LibraryManagement()
+    
+    // Add sample books
+    booksToAdd = [
+        NEW Book("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 1925, 4.2, "Classic"),
+        NEW Book("To Kill a Mockingbird", "Harper Lee", "9780061120084", 1960, 4.3, "Fiction"),
+        NEW Book("1984", "George Orwell", "9780451524935", 1949, 4.5, "Dystopian"),
+        NEW Book("Pride and Prejudice", "Jane Austen", "9780141439518", 1813, 4.4, "Romance"),
+        NEW Book("The Hobbit", "J.R.R. Tolkien", "9780547928227", 1937, 4.6, "Fantasy"),
+        NEW Book("Harry Potter", "J.K. Rowling", "9780439708180", 1997, 4.7, "Fantasy"),
+        NEW Book("The Hunger Games", "Suzanne Collins", "9780439023528", 2008, 4.5, "Dystopian"),
+        NEW Book("The Da Vinci Code", "Dan Brown", "9780307277671", 2003, 4.1, "Thriller"),
+        NEW Book("The Alchemist", "Paulo Coelho", "9780061122415", 1988, 4.3, "Philosophy"),
+        NEW Book("Atomic Habits", "James Clear", "9780735211292", 2018, 4.8, "Self-Help"),
+        NEW Book("Educated", "Tara Westover", "9780399590504", 2018, 4.7, "Memoir"),
+        NEW Book("Becoming", "Michelle Obama", "9781524763138", 2018, 4.6, "Memoir"),
+        NEW Book("Where the Crawdads Sing", "Delia Owens", "9780735219090", 2018, 4.5, "Mystery"),
+        NEW Book("The Silent Patient", "Alex Michaelides", "9781250301697", 2019, 4.4, "Thriller"),
+        NEW Book("Project Hail Mary", "Andy Weir", "9780593135204", 2021, 4.8, "Sci-Fi")
+    ]
+    
+    FOR each book in booksToAdd:
+        library.addBook(book)
+    
+    // Demonstrate various stream operations
+    
+    // Get books published after 2015 with rating > 4.5
+    filteredBooks = library.getBooksByYearAndRating(2015, 4.5)
+    library.printBooks(filteredBooks, "Books Published After 2015 with Rating > 4.5")
+    
+    // Get books sorted by rating
+    sortedByRating = library.getBooksSortedByRating()
+    library.printBooks(sortedByRating, "Books Sorted by Rating (Highest First)")
+    
+    // Get top 5 rated books
+    top5 = library.getTopRatedBooks(5)
+    library.printBooks(top5, "Top 5 Rated Books")
+    
+    // Get books by genre
+    fantasyBooks = library.getBooksByGenre("Fantasy")
+    library.printBooks(fantasyBooks, "Fantasy Books")
+    
+    // Search books
+    searchResults = library.searchBooks("Harry")
+    library.printBooks(searchResults, "Search Results for 'Harry'")
+    
+    // Get average rating
+    averageRating = library.getAverageRating()
+    PRINT "Average rating of all books: " + averageRating
+    
+    // Get books count by genre
+    genreCounts = library.getBooksCountByGenre()
+    PRINT "Books count by genre:"
+    FOR each entry in genreCounts:
+        PRINT "  " + entry.getKey() + ": " + entry.getValue()

@@ -1,0 +1,285 @@
+PSEUDOCODE: Maze Solver Bot (Recursion & Backtracking)
+
+// Position Class
+CLASS Position:
+    row: integer
+    col: integer
+    
+    CONSTRUCTOR(row, col):
+        row = row
+        col = col
+    
+    METHOD isEqual(other: Position):
+        RETURN row == other.row AND col == other.col
+    
+    METHOD toString():
+        RETURN "(" + row + ", " + col + ")"
+
+// Maze Constants
+CONSTANTS:
+    WALL = 0
+    PATH = 1
+    VISITED = 2
+    SOLUTION = 3
+    START = 4
+    END = 5
+
+// Maze Solver Bot
+CLASS MazeSolver:
+    maze: 2D ARRAY of integer
+    rows: integer
+    cols: integer
+    startPos: Position
+    endPos: Position
+    solutionPath: LIST of Position
+    
+    CONSTRUCTOR(maze, startRow, startCol, endRow, endCol):
+        maze = maze
+        rows = maze.length
+        cols = maze[0].length
+        startPos = NEW Position(startRow, startCol)
+        endPos = NEW Position(endRow, endCol)
+        solutionPath = EMPTY_LIST
+    
+    METHOD isValidMove(row: integer, col: integer):
+        // Check if position is within bounds
+        IF row < 0 OR row >= rows OR col < 0 OR col >= cols:
+            RETURN false
+        
+        // Check if position is a valid path (not wall or already visited)
+        IF maze[row][col] == WALL OR maze[row][col] == VISITED:
+            RETURN false
+        
+        RETURN true
+    
+    METHOD printMaze():
+        PRINT "Current Maze State:"
+        FOR row = 0 to rows-1:
+            FOR col = 0 to cols-1:
+                IF row == startPos.row AND col == startPos.col:
+                    PRINT "S "
+                ELSE IF row == endPos.row AND col == endPos.col:
+                    PRINT "E "
+                ELSE:
+                    SWITCH maze[row][col]:
+                        CASE WALL:
+                            PRINT "# "
+                        CASE PATH:
+                            PRINT ". "
+                        CASE VISITED:
+                            PRINT "- "
+                        CASE SOLUTION:
+                            PRINT "* "
+                        DEFAULT:
+                            PRINT "? "
+            PRINT ""
+    
+    METHOD solveMaze():
+        PRINT "=== Starting Maze Solver ==="
+        PRINT "Start: " + startPos.toString()
+        PRINT "End: " + endPos.toString()
+        
+        // Mark start position as solution path
+        maze[startPos.row][startPos.col] = SOLUTION
+        
+        // Start recursive solving
+        IF solve(startPos.row, startPos.col):
+            PRINT "\n=== Solution Found! ==="
+            PRINT "Path length: " + solutionPath.size()
+            PRINT "Solution path:"
+            FOR each pos in solutionPath:
+                PRINT "  " + pos.toString()
+            
+            PRINT "\n=== Final Maze ==="
+            printMaze()
+            RETURN true
+        ELSE:
+            PRINT "No solution found!"
+            RETURN false
+    
+    METHOD solve(row: integer, col: integer):
+        // Base case: reached the end
+        IF row == endPos.row AND col == endPos.col:
+            ADD NEW Position(row, col) to solutionPath
+            RETURN true
+        
+        // Mark current position as visited
+        maze[row][col] = VISITED
+        
+        // Define possible directions: right, down, left, up
+        directions = [[0,1], [1,0], [0,-1], [-1,0]]
+        
+        // Try each direction
+        FOR each direction in directions:
+            newRow = row + direction[0]
+            newCol = col + direction[1]
+            
+            IF isValidMove(newRow, newCol):
+                // Mark as solution path
+                maze[newRow][newCol] = SOLUTION
+                
+                // Recursively solve from new position
+                IF solve(newRow, newCol):
+                    // Add current position to solution path (backwards)
+                    ADD NEW Position(row, col) to solutionPath
+                    RETURN true
+                
+                // Backtrack: mark as visited (not part of solution)
+                maze[newRow][newCol] = VISITED
+        
+        // No valid path found from this position
+        RETURN false
+    
+    METHOD findAllPaths():
+        PRINT "=== Finding All Possible Paths ==="
+        allPaths = EMPTY_LIST
+        currentPath = EMPTY_LIST
+        
+        // Reset maze to original state
+        resetMaze()
+        
+        // Find all paths using backtracking
+        findPaths(startPos.row, startPos.col, currentPath, allPaths)
+        
+        PRINT "Total paths found: " + allPaths.size()
+        FOR pathNum = 0 to allPaths.size()-1:
+            PRINT "Path " + (pathNum+1) + ":"
+            path = allPaths.get(pathNum)
+            FOR each pos in path:
+                PRINT "  " + pos.toString()
+            PRINT ""
+    
+    METHOD findPaths(row: integer, col: integer, currentPath: LIST of Position, allPaths: LIST of LIST of Position):
+        // Base case: reached the end
+        IF row == endPos.row AND col == endPos.col:
+            // Create a copy of current path and add end position
+            pathCopy = NEW LIST of Position
+            FOR each pos in currentPath:
+                ADD pos to pathCopy
+            ADD NEW Position(row, col) to pathCopy
+            ADD pathCopy to allPaths
+            RETURN
+        
+        // Check if valid move
+        IF NOT isValidMove(row, col):
+            RETURN
+        
+        // Mark as visited
+        temp = maze[row][col]
+        maze[row][col] = VISITED
+        
+        // Add current position to path
+        ADD NEW Position(row, col) to currentPath
+        
+        // Define possible directions
+        directions = [[0,1], [1,0], [0,-1], [-1,0]]
+        
+        // Try each direction
+        FOR each direction in directions:
+            newRow = row + direction[0]
+            newCol = col + direction[1]
+            
+            findPaths(newRow, newCol, currentPath, allPaths)
+        
+        // Backtrack
+        REMOVE last element from currentPath
+        maze[row][col] = temp
+    
+    METHOD resetMaze():
+        FOR row = 0 to rows-1:
+            FOR col = 0 to cols-1:
+                IF maze[row][col] == VISITED OR maze[row][col] == SOLUTION:
+                    maze[row][col] = PATH
+    
+    METHOD getShortestPath():
+        PRINT "=== Finding Shortest Path ==="
+        shortestPath = EMPTY_LIST
+        minLength = INFINITY
+        
+        // Reset maze
+        resetMaze()
+        
+        // Find shortest path using BFS (Breadth-First Search)
+        queue = NEW Queue of Position
+        visited = NEW 2D ARRAY[rows][cols] of boolean
+        parent = NEW 2D ARRAY[rows][cols] of Position
+        
+        // Initialize
+        queue.enqueue(startPos)
+        visited[startPos.row][startPos.col] = true
+        parent[startPos.row][startPos.col] = null
+        
+        found = false
+        
+        WHILE queue is not empty:
+            current = queue.dequeue()
+            
+            // Check if reached end
+            IF current.row == endPos.row AND current.col == endPos.col:
+                found = true
+                BREAK
+            
+            // Explore neighbors
+            directions = [[0,1], [1,0], [0,-1], [-1,0]]
+            FOR each direction in directions:
+                newRow = current.row + direction[0]
+                newCol = current.col + direction[1]
+                
+                IF newRow >= 0 AND newRow < rows AND newCol >= 0 AND newCol < cols:
+                    IF maze[newRow][newCol] == PATH AND NOT visited[newRow][newCol]:
+                        visited[newRow][newCol] = true
+                        parent[newRow][newCol] = current
+                        queue.enqueue(NEW Position(newRow, newCol))
+        
+        // Reconstruct path if found
+        IF found:
+            path = EMPTY_LIST
+            current = endPos
+            
+            WHILE current is not null:
+                ADD current to path
+                current = parent[current.row][current.col]
+            
+            // Reverse path to get from start to end
+            shortestPath = reverse(path)
+            
+            PRINT "Shortest path found! Length: " + shortestPath.size()
+            FOR each pos in shortestPath:
+                PRINT "  " + pos.toString()
+            
+            RETURN shortestPath
+        ELSE:
+            PRINT "No path found!"
+            RETURN EMPTY_LIST
+
+// Helper method to reverse a list
+METHOD reverse(list: LIST of Position):
+    reversed = EMPTY_LIST
+    FOR i = list.size()-1 downto 0:
+        ADD list.get(i) to reversed
+    RETURN reversed
+
+// Main Program
+MAIN():
+    // Create sample maze (0 = wall, 1 = path)
+    maze = [
+        [1, 0, 1, 1, 1, 1, 1],
+        [1, 0, 1, 0, 0, 0, 1],
+        [1, 1, 1, 1, 1, 0, 1],
+        [1, 0, 0, 0, 1, 0, 1],
+        [1, 1, 1, 1, 1, 1, 1]
+    ]
+    
+    solver = NEW MazeSolver(maze, 0, 0, 4, 6)
+    
+    PRINT "=== Initial Maze ==="
+    solver.printMaze()
+    
+    // Solve the maze
+    solver.solveMaze()
+    
+    // Find all possible paths
+    solver.findAllPaths()
+    
+    // Find shortest path
+    solver.getShortestPath()

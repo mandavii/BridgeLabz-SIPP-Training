@@ -1,0 +1,239 @@
+PSEUDOCODE: Medical Record Manager (Interfaces & Polymorphism)
+
+// Interfaces
+INTERFACE Searchable:
+    METHOD search(keyword: string): LIST of Report
+
+INTERFACE Printable:
+    METHOD print(): string
+    METHOD printSummary(): string
+
+// Base Report Class
+CLASS Report IMPLEMENTS Searchable, Printable:
+    reportId: string
+    patientId: string
+    patientName: string
+    date: string
+    
+    CONSTRUCTOR(reportId, patientId, patientName, date):
+        reportId = reportId
+        patientId = patientId
+        patientName = patientName
+        date = date
+    
+    METHOD search(keyword: string): LIST of Report
+        result = EMPTY_LIST
+        IF patientName CONTAINS keyword OR reportId CONTAINS keyword:
+            ADD this to result
+        RETURN result
+    
+    METHOD print(): string
+        RETURN "Report ID: " + reportId + " | Patient: " + patientName + " | Date: " + date
+    
+    METHOD printSummary(): string
+        RETURN "Report: " + reportId + " - " + patientName
+
+// Lab Report Class
+CLASS LabReport EXTENDS Report:
+    testType: string
+    testResults: MAP of string to string
+    normalRange: string
+    
+    CONSTRUCTOR(reportId, patientId, patientName, date, testType):
+        SUPER(reportId, patientId, patientName, date)
+        testType = testType
+        testResults = EMPTY_MAP
+        normalRange = ""
+    
+    METHOD addTestResult(testName: string, value: string):
+        ADD testName, value to testResults
+    
+    METHOD search(keyword: string): LIST of Report
+        result = SUPER.search(keyword)
+        IF testType CONTAINS keyword OR testResults CONTAINS keyword:
+            ADD this to result
+        RETURN result
+    
+    METHOD print(): string
+        details = SUPER.print() + "\n"
+        details = details + "Test Type: " + testType + "\n"
+        details = details + "Results:\n"
+        FOR each test, result in testResults:
+            details = details + "  " + test + ": " + result + "\n"
+        details = details + "Normal Range: " + normalRange
+        RETURN details
+    
+    METHOD printSummary(): string
+        RETURN "Lab Report: " + testType + " - " + patientName + " - " + date
+
+// X-Ray Report Class
+CLASS XRayReport EXTENDS Report:
+    bodyPart: string
+    findings: string
+    impression: string
+    
+    CONSTRUCTOR(reportId, patientId, patientName, date, bodyPart):
+        SUPER(reportId, patientId, patientName, date)
+        bodyPart = bodyPart
+        findings = ""
+        impression = ""
+    
+    METHOD setFindings(findings: string, impression: string):
+        findings = findings
+        impression = impression
+    
+    METHOD search(keyword: string): LIST of Report
+        result = SUPER.search(keyword)
+        IF bodyPart CONTAINS keyword OR findings CONTAINS keyword OR impression CONTAINS keyword:
+            ADD this to result
+        RETURN result
+    
+    METHOD print(): string
+        details = SUPER.print() + "\n"
+        details = details + "Body Part: " + bodyPart + "\n"
+        details = details + "Findings: " + findings + "\n"
+        details = details + "Impression: " + impression
+        RETURN details
+    
+    METHOD printSummary(): string
+        RETURN "X-Ray: " + bodyPart + " - " + patientName + " - " + date
+
+// Prescription Report Class
+CLASS PrescriptionReport EXTENDS Report:
+    medications: LIST of string
+    dosage: MAP of string to string
+    duration: string
+    
+    CONSTRUCTOR(reportId, patientId, patientName, date):
+        SUPER(reportId, patientId, patientName, date)
+        medications = EMPTY_LIST
+        dosage = EMPTY_MAP
+        duration = ""
+    
+    METHOD addMedication(medName: string, dosage: string):
+        ADD medName to medications
+        ADD medName, dosage to dosage
+    
+    METHOD search(keyword: string): LIST of Report
+        result = SUPER.search(keyword)
+        FOR each med in medications:
+            IF med CONTAINS keyword:
+                ADD this to result
+                BREAK
+        RETURN result
+    
+    METHOD print(): string
+        details = SUPER.print() + "\n"
+        details = details + "Prescribed Medications:\n"
+        FOR each med in medications:
+            details = details + "  " + med + " - " + dosage.get(med) + "\n"
+        details = details + "Duration: " + duration
+        RETURN details
+    
+    METHOD printSummary(): string
+        RETURN "Prescription: " + patientName + " - " + medications.size() + " medications - " + date
+
+// Medical Record Manager
+CLASS MedicalRecordManager:
+    reports: LIST of Report
+    
+    CONSTRUCTOR():
+        reports = EMPTY_LIST
+    
+    METHOD addReport(report: Report):
+        ADD report to reports
+        PRINT "Report added: " + report.reportId
+    
+    METHOD removeReport(reportId: string):
+        report = FIND report in reports WHERE report.reportId == reportId
+        IF report:
+            REMOVE report from reports
+            PRINT "Report removed: " + reportId
+        ELSE:
+            PRINT "Report not found: " + reportId
+    
+    METHOD searchReports(keyword: string): LIST of Report
+        result = EMPTY_LIST
+        FOR each report in reports:
+            matches = report.search(keyword)
+            FOR each match in matches:
+                ADD match to result
+        RETURN result
+    
+    METHOD getPatientReports(patientId: string): LIST of Report
+        result = EMPTY_LIST
+        FOR each report in reports:
+            IF report.patientId == patientId:
+                ADD report to result
+        RETURN result
+    
+    METHOD printReport(reportId: string):
+        report = FIND report in reports WHERE report.reportId == reportId
+        IF report:
+            PRINT report.print()
+        ELSE:
+            PRINT "Report not found: " + reportId
+    
+    METHOD printAllReports():
+        PRINT "=== All Medical Reports ==="
+        FOR each report in reports:
+            PRINT report.printSummary()
+    
+    METHOD printReportsByType(type: string):
+        PRINT "=== " + type + " Reports ==="
+        FOR each report in reports:
+            IF type == "Lab" AND report IS LabReport:
+                PRINT report.printSummary()
+            ELSE IF type == "XRay" AND report IS XRayReport:
+                PRINT report.printSummary()
+            ELSE IF type == "Prescription" AND report IS PrescriptionReport:
+                PRINT report.printSummary()
+
+// Main Program
+MAIN():
+    manager = NEW MedicalRecordManager()
+    
+    // Create different types of reports
+    labReport1 = NEW LabReport("LAB001", "P001", "Alice Johnson", "2024-01-15", "Blood Test")
+    labReport1.addTestResult("Hemoglobin", "12.5")
+    labReport1.addTestResult("Glucose", "95")
+    labReport1.normalRange = "Hb: 12-16, Glucose: 70-100"
+    
+    xrayReport1 = NEW XRayReport("XRAY001", "P001", "Alice Johnson", "2024-01-16", "Chest")
+    xrayReport1.setFindings("Clear lung fields", "No abnormalities detected")
+    
+    prescription1 = NEW PrescriptionReport("PRE001", "P001", "Alice Johnson", "2024-01-17")
+    prescription1.addMedication("Paracetamol", "500mg twice daily")
+    prescription1.addMedication("Vitamin C", "1000mg daily")
+    prescription1.duration = "7 days"
+    
+    labReport2 = NEW LabReport("LAB002", "P002", "Bob Smith", "2024-01-18", "Cholesterol")
+    labReport2.addTestResult("Total Cholesterol", "220")
+    labReport2.addTestResult("LDL", "140")
+    labReport2.normalRange = "Total: <200, LDL: <100"
+    
+    // Add reports to manager
+    manager.addReport(labReport1)
+    manager.addReport(xrayReport1)
+    manager.addReport(prescription1)
+    manager.addReport(labReport2)
+    
+    // Demonstrate polymorphism
+    PRINT "=== All Reports ==="
+    manager.printAllReports()
+    
+    PRINT "\n=== Search Results ==="
+    searchResults = manager.searchReports("Alice")
+    FOR each report in searchResults:
+        PRINT report.printSummary()
+    
+    PRINT "\n=== Patient Reports ==="
+    patientReports = manager.getPatientReports("P001")
+    FOR each report in patientReports:
+        PRINT report.printSummary()
+    
+    PRINT "\n=== Lab Reports ==="
+    manager.printReportsByType("Lab")
+    
+    PRINT "\n=== Detailed Report ==="
+    manager.printReport("LAB001")

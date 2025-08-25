@@ -1,0 +1,190 @@
+PSEUDOCODE: Food Delivery System (Composition)
+
+// Customer Class
+CLASS Customer:
+    customerId: string
+    name: string
+    phone: string
+    address: string
+    
+    CONSTRUCTOR(id, name, phone, address):
+        customerId = id
+        name = name
+        phone = phone
+        address = address
+    
+    METHOD getCustomerDetails():
+        RETURN "Customer: " + name + " | Phone: " + phone + " | Address: " + address
+
+// Restaurant Class
+CLASS Restaurant:
+    restaurantId: string
+    name: string
+    cuisine: string
+    rating: double
+    
+    CONSTRUCTOR(id, name, cuisine, rating):
+        restaurantId = id
+        name = name
+        cuisine = cuisine
+        rating = rating
+    
+    METHOD getRestaurantDetails():
+        RETURN "Restaurant: " + name + " | Cuisine: " + cuisine + " | Rating: " + rating
+
+// DeliveryBoy Class
+CLASS DeliveryBoy:
+    deliveryBoyId: string
+    name: string
+    phone: string
+    vehicleType: string
+    
+    CONSTRUCTOR(id, name, phone, vehicleType):
+        deliveryBoyId = id
+        name = name
+        phone = phone
+        vehicleType = vehicleType
+    
+    METHOD getDeliveryBoyDetails():
+        RETURN "Delivery Boy: " + name + " | Phone: " + phone + " | Vehicle: " + vehicleType
+
+// OrderItem Class
+CLASS OrderItem:
+    itemName: string
+    price: double
+    quantity: integer
+    
+    CONSTRUCTOR(name, price, quantity):
+        itemName = name
+        price = price
+        quantity = quantity
+    
+    METHOD getSubtotal():
+        RETURN price * quantity
+
+// Order Class (Composition)
+CLASS Order:
+    orderId: string
+    customer: Customer
+    restaurant: Restaurant
+    deliveryBoy: DeliveryBoy
+    items: LIST of OrderItem
+    orderStatus: string
+    totalAmount: double
+    
+    CONSTRUCTOR(orderId, customer, restaurant, deliveryBoy):
+        orderId = orderId
+        customer = customer
+        restaurant = restaurant
+        deliveryBoy = deliveryBoy
+        items = EMPTY_LIST
+        orderStatus = "Placed"
+        totalAmount = 0.0
+    
+    METHOD addItem(item: OrderItem):
+        ADD item to items
+        totalAmount = totalAmount + item.getSubtotal()
+        PRINT "Added " + item.itemName + " to order"
+    
+    METHOD calculateTotal():
+        subtotal = 0.0
+        FOR each item in items:
+            subtotal = subtotal + item.getSubtotal()
+        
+        // Add delivery charges
+        deliveryCharge = 5.0
+        tax = subtotal * 0.08
+        totalAmount = subtotal + deliveryCharge + tax
+        
+        RETURN totalAmount
+    
+    METHOD updateStatus(status: string):
+        orderStatus = status
+        PRINT "Order " + orderId + " status updated to: " + status
+    
+    METHOD assignDeliveryBoy(deliveryBoy: DeliveryBoy):
+        deliveryBoy = deliveryBoy
+        PRINT "Delivery boy assigned: " + deliveryBoy.name
+    
+    METHOD getOrderDetails():
+        details = "=== Order Details ===\n"
+        details = details + "Order ID: " + orderId + "\n"
+        details = details + customer.getCustomerDetails() + "\n"
+        details = details + restaurant.getRestaurantDetails() + "\n"
+        details = details + deliveryBoy.getDeliveryBoyDetails() + "\n"
+        details = details + "Status: " + orderStatus + "\n"
+        details = details + "Items:\n"
+        
+        FOR each item in items:
+            details = details + "  " + item.itemName + " - $" + item.price + " x " + item.quantity + " = $" + item.getSubtotal() + "\n"
+        
+        details = details + "Total: $" + calculateTotal()
+        RETURN details
+
+// Food Delivery Service Manager
+CLASS FoodDeliveryService:
+    orders: LIST of Order
+    customers: LIST of Customer
+    restaurants: LIST of Restaurant
+    deliveryBoys: LIST of DeliveryBoy
+    
+    CONSTRUCTOR():
+        orders = EMPTY_LIST
+        customers = EMPTY_LIST
+        restaurants = EMPTY_LIST
+        deliveryBoys = EMPTY_LIST
+    
+    METHOD registerCustomer(customer: Customer):
+        ADD customer to customers
+        PRINT "Customer registered: " + customer.name
+    
+    METHOD addRestaurant(restaurant: Restaurant):
+        ADD restaurant to restaurants
+        PRINT "Restaurant added: " + restaurant.name
+    
+    METHOD addDeliveryBoy(deliveryBoy: DeliveryBoy):
+        ADD deliveryBoy to deliveryBoys
+        PRINT "Delivery boy added: " + deliveryBoy.name
+    
+    METHOD createOrder(orderId: string, customerId: string, restaurantId: string):
+        customer = FIND customer in customers WHERE customer.customerId == customerId
+        restaurant = FIND restaurant in restaurants WHERE restaurant.restaurantId == restaurantId
+        deliveryBoy = FIND available delivery boy from deliveryBoys
+        
+        IF customer AND restaurant AND deliveryBoy:
+            order = NEW Order(orderId, customer, restaurant, deliveryBoy)
+            ADD order to orders
+            PRINT "Order created successfully"
+            RETURN order
+        ELSE:
+            PRINT "Error: Customer, restaurant, or delivery boy not found"
+            RETURN null
+
+// Main Program
+MAIN():
+    service = NEW FoodDeliveryService()
+    
+    // Setup service
+    customer1 = NEW Customer("C001", "John Doe", "1234567890", "123 Main St")
+    restaurant1 = NEW Restaurant("R001", "Pizza Palace", "Italian", 4.5)
+    deliveryBoy1 = NEW DeliveryBoy("D001", "Mike Johnson", "0987654321", "Bike")
+    
+    service.registerCustomer(customer1)
+    service.addRestaurant(restaurant1)
+    service.addDeliveryBoy(deliveryBoy1)
+    
+    // Create order
+    order = service.createOrder("ORD001", "C001", "R001")
+    
+    IF order:
+        // Add items to order
+        order.addItem(NEW OrderItem("Margherita Pizza", 12.99, 1))
+        order.addItem(NEW OrderItem("Garlic Bread", 4.99, 2))
+        order.addItem(NEW OrderItem("Coca Cola", 1.99, 3))
+        
+        // Process order
+        PRINT order.getOrderDetails()
+        
+        order.updateStatus("Preparing")
+        order.updateStatus("Out for delivery")
+        order.updateStatus("Delivered")

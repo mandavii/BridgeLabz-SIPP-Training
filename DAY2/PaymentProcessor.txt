@@ -1,0 +1,386 @@
+PSEUDOCODE: Payment Processor (Generic Transaction<T>)
+
+// Base Transaction Interface
+INTERFACE Transaction<T>:
+    METHOD getTransactionId(): string
+    METHOD getAmount(): double
+    METHOD getTimestamp(): string
+    METHOD getPaymentDetails(): T
+    METHOD isSuccessful(): boolean
+    METHOD setSuccessful(successful: boolean)
+
+// UPI Payment Details
+CLASS UPIDetails:
+    upiId: string
+    upiHandle: string
+    merchantId: string
+    
+    CONSTRUCTOR(upiId, upiHandle, merchantId):
+        upiId = upiId
+        upiHandle = upiHandle
+        merchantId = merchantId
+    
+    METHOD toString():
+        RETURN "UPI: " + upiId + "@" + upiHandle + " | Merchant: " + merchantId
+
+// Card Payment Details
+CLASS CardDetails:
+    cardNumber: string
+    cardHolderName: string
+    expiryDate: string
+    cvv: string
+    cardType: string
+    
+    CONSTRUCTOR(cardNumber, cardHolderName, expiryDate, cvv, cardType):
+        cardNumber = cardNumber
+        cardHolderName = cardHolderName
+        expiryDate = expiryDate
+        cvv = cvv
+        cardType = cardType
+    
+    METHOD getMaskedCardNumber():
+        RETURN "**** **** **** " + cardNumber.substring(cardNumber.length() - 4)
+    
+    METHOD toString():
+        RETURN "Card: " + getMaskedCardNumber() + " | Type: " + cardType + " | Holder: " + cardHolderName
+
+// Net Banking Details
+CLASS NetBankingDetails:
+    bankName: string
+    accountNumber: string
+    ifscCode: string
+    customerId: string
+    
+    CONSTRUCTOR(bankName, accountNumber, ifscCode, customerId):
+        bankName = bankName
+        accountNumber = accountNumber
+        ifscCode = ifscCode
+        customerId = customerId
+    
+    METHOD getMaskedAccountNumber():
+        RETURN "****" + accountNumber.substring(accountNumber.length() - 4)
+    
+    METHOD toString():
+        RETURN "Net Banking: " + bankName + " | Account: " + getMaskedAccountNumber()
+
+// UPI Transaction
+CLASS UPITransaction IMPLEMENTS Transaction<UPIDetails>:
+    transactionId: string
+    amount: double
+    timestamp: string
+    upiDetails: UPIDetails
+    successful: boolean
+    
+    CONSTRUCTOR(transactionId, amount, upiDetails):
+        transactionId = transactionId
+        amount = amount
+        timestamp = getCurrentTimestamp()
+        upiDetails = upiDetails
+        successful = false
+    
+    METHOD getTransactionId():
+        RETURN transactionId
+    
+    METHOD getAmount():
+        RETURN amount
+    
+    METHOD getTimestamp():
+        RETURN timestamp
+    
+    METHOD getPaymentDetails():
+        RETURN upiDetails
+    
+    METHOD isSuccessful():
+        RETURN successful
+    
+    METHOD setSuccessful(successful: boolean):
+        successful = successful
+    
+    METHOD processPayment():
+        PRINT "Processing UPI Transaction: " + transactionId
+        PRINT "Amount: ₹" + amount
+        PRINT "UPI Details: " + upiDetails.toString()
+        
+        // Simulate payment processing
+        IF validateUPIDetails():
+            PRINT "UPI payment successful"
+            setSuccessful(true)
+            RETURN true
+        ELSE:
+            PRINT "UPI payment failed"
+            setSuccessful(false)
+            RETURN false
+    
+    METHOD validateUPIDetails():
+        // Basic validation
+        IF upiDetails.upiId.isEmpty() OR upiDetails.upiHandle.isEmpty():
+            RETURN false
+        
+        // Simulate 90% success rate
+        RETURN random() < 0.9
+
+// Card Transaction
+CLASS CardTransaction IMPLEMENTS Transaction<CardDetails>:
+    transactionId: string
+    amount: double
+    timestamp: string
+    cardDetails: CardDetails
+    successful: boolean
+    
+    CONSTRUCTOR(transactionId, amount, cardDetails):
+        transactionId = transactionId
+        amount = amount
+        timestamp = getCurrentTimestamp()
+        cardDetails = cardDetails
+        successful = false
+    
+    METHOD getTransactionId():
+        RETURN transactionId
+    
+    METHOD getAmount():
+        RETURN amount
+    
+    METHOD getTimestamp():
+        RETURN timestamp
+    
+    METHOD getPaymentDetails():
+        RETURN cardDetails
+    
+    METHOD isSuccessful():
+        RETURN successful
+    
+    METHOD setSuccessful(successful: boolean):
+        successful = successful
+    
+    METHOD processPayment():
+        PRINT "Processing Card Transaction: " + transactionId
+        PRINT "Amount: ₹" + amount
+        PRINT "Card Details: " + cardDetails.toString()
+        
+        // Simulate payment processing
+        IF validateCardDetails():
+            PRINT "Card payment successful"
+            setSuccessful(true)
+            RETURN true
+        ELSE:
+            PRINT "Card payment failed"
+            setSuccessful(false)
+            RETURN false
+    
+    METHOD validateCardDetails():
+        // Basic validation
+        IF cardDetails.cardNumber.length() != 16:
+            RETURN false
+        
+        IF cardDetails.cvv.length() != 3:
+            RETURN false
+        
+        // Simulate 85% success rate
+        RETURN random() < 0.85
+
+// Net Banking Transaction
+CLASS NetBankingTransaction IMPLEMENTS Transaction<NetBankingDetails>:
+    transactionId: string
+    amount: double
+    timestamp: string
+    netBankingDetails: NetBankingDetails
+    successful: boolean
+    
+    CONSTRUCTOR(transactionId, amount, netBankingDetails):
+        transactionId = transactionId
+        amount = amount
+        timestamp = getCurrentTimestamp()
+        netBankingDetails = netBankingDetails
+        successful = false
+    
+    METHOD getTransactionId():
+        RETURN transactionId
+    
+    METHOD getAmount():
+        RETURN amount
+    
+    METHOD getTimestamp():
+        RETURN timestamp
+    
+    METHOD getPaymentDetails():
+        RETURN netBankingDetails
+    
+    METHOD isSuccessful():
+        RETURN successful
+    
+    METHOD setSuccessful(successful: boolean):
+        successful = successful
+    
+    METHOD processPayment():
+        PRINT "Processing Net Banking Transaction: " + transactionId
+        PRINT "Amount: ₹" + amount
+        PRINT "Net Banking Details: " + netBankingDetails.toString()
+        
+        // Simulate payment processing
+        IF validateNetBankingDetails():
+            PRINT "Net Banking payment successful"
+            setSuccessful(true)
+            RETURN true
+        ELSE:
+            PRINT "Net Banking payment failed"
+            setSuccessful(false)
+            RETURN false
+    
+    METHOD validateNetBankingDetails():
+        // Basic validation
+        IF netBankingDetails.accountNumber.isEmpty() OR netBankingDetails.ifscCode.isEmpty():
+            RETURN false
+        
+        // Simulate 80% success rate
+        RETURN random() < 0.8
+
+// Payment Processor Manager
+CLASS PaymentProcessor:
+    transactions: LIST of Transaction
+    transactionCounter: integer
+    
+    CONSTRUCTOR():
+        transactions = EMPTY_LIST
+        transactionCounter = 1000
+    
+    METHOD generateTransactionId():
+        transactionCounter = transactionCounter + 1
+        RETURN "TXN" + transactionCounter
+    
+    METHOD processPayment<T>(transaction: Transaction<T>):
+        PRINT "\n=== Processing Payment ==="
+        PRINT "Transaction ID: " + transaction.getTransactionId()
+        PRINT "Amount: ₹" + transaction.getAmount()
+        PRINT "Timestamp: " + transaction.getTimestamp()
+        
+        // Process the payment
+        success = transaction.processPayment()
+        
+        // Add to transaction history
+        ADD transaction to transactions
+        
+        RETURN success
+    
+    METHOD getTransactionHistory():
+        RETURN transactions
+    
+    METHOD getSuccessfulTransactions():
+        RETURN transactions.stream()
+            .filter(transaction -> transaction.isSuccessful())
+            .collect(toList())
+    
+    METHOD getFailedTransactions():
+        RETURN transactions.stream()
+            .filter(transaction -> NOT transaction.isSuccessful())
+            .collect(toList())
+    
+    METHOD getTransactionsByType<T>(type: Class<T>):
+        RETURN transactions.stream()
+            .filter(transaction -> transaction.getPaymentDetails().getClass() == type)
+            .collect(toList())
+    
+    METHOD getTotalTransactionAmount():
+        RETURN transactions.stream()
+            .mapToDouble(transaction -> transaction.getAmount())
+            .sum()
+    
+    METHOD getTotalSuccessfulAmount():
+        RETURN transactions.stream()
+            .filter(transaction -> transaction.isSuccessful())
+            .mapToDouble(transaction -> transaction.getAmount())
+            .sum()
+    
+    METHOD printTransactionSummary():
+        PRINT "\n=== Transaction Summary ==="
+        PRINT "Total transactions: " + transactions.size()
+        PRINT "Successful transactions: " + getSuccessfulTransactions().size()
+        PRINT "Failed transactions: " + getFailedTransactions().size()
+        PRINT "Total amount processed: ₹" + getTotalTransactionAmount()
+        PRINT "Total successful amount: ₹" + getTotalSuccessfulAmount()
+    
+    METHOD printDetailedHistory():
+        PRINT "\n=== Detailed Transaction History ==="
+        FOR each transaction in transactions:
+            PRINT "Transaction ID: " + transaction.getTransactionId()
+            PRINT "Amount: ₹" + transaction.getAmount()
+            PRINT "Status: " + (transaction.isSuccessful() ? "SUCCESS" : "FAILED")
+            PRINT "Payment Details: " + transaction.getPaymentDetails().toString()
+            PRINT "-------------------"
+
+// Main Program
+MAIN():
+    processor = NEW PaymentProcessor()
+    
+    // Create sample transactions
+    
+    // UPI Transactions
+    upi1 = NEW UPIDetails("user123", "upi", "MERCHANT001")
+    upiTransaction1 = NEW UPITransaction(
+        processor.generateTransactionId(),
+        1500.50,
+        upi1
+    )
+    
+    upi2 = NEW UPIDetails("user456", "paytm", "MERCHANT002")
+    upiTransaction2 = NEW UPITransaction(
+        processor.generateTransactionId(),
+        2500.00,
+        upi2
+    )
+    
+    // Card Transactions
+    card1 = NEW CardDetails("1234567890123456", "John Doe", "12/25", "123", "Visa")
+    cardTransaction1 = NEW CardTransaction(
+        processor.generateTransactionId(),
+        3500.75,
+        card1
+    )
+    
+    card2 = NEW CardDetails("9876543210987654", "Jane Smith", "06/26", "456", "MasterCard")
+    cardTransaction2 = NEW CardTransaction(
+        processor.generateTransactionId(),
+        1200.00,
+        card2
+    )
+    
+    // Net Banking Transactions
+    netBanking1 = NEW NetBankingDetails("HDFC Bank", "1234567890", "HDFC0001234", "CUST001")
+    netBankingTransaction1 = NEW NetBankingTransaction(
+        processor.generateTransactionId(),
+        5000.00,
+        netBanking1
+    )
+    
+    netBanking2 = NEW NetBankingDetails("ICICI Bank", "0987654321", "ICIC0005678", "CUST002")
+    netBankingTransaction2 = NEW NetBankingTransaction(
+        processor.generateTransactionId(),
+        750.25,
+        netBanking2
+    )
+    
+    // Process all transactions
+    processor.processPayment(upiTransaction1)
+    processor.processPayment(upiTransaction2)
+    processor.processPayment(cardTransaction1)
+    processor.processPayment(cardTransaction2)
+    processor.processPayment(netBankingTransaction1)
+    processor.processPayment(netBankingTransaction2)
+    
+    // Print summary
+    processor.printTransactionSummary()
+    processor.printDetailedHistory()
+    
+    // Demonstrate type safety with generics
+    PRINT "\n=== Type-Safe Operations ==="
+    
+    // Get all UPI transactions
+    upiTransactions = processor.getTransactionsByType(UPITransaction.class)
+    PRINT "UPI transactions count: " + upiTransactions.size()
+    
+    // Get all Card transactions
+    cardTransactions = processor.getTransactionsByType(CardTransaction.class)
+    PRINT "Card transactions count: " + cardTransactions.size()
+    
+    // Get all Net Banking transactions
+    netBankingTransactions = processor.getTransactionsByType(NetBankingTransaction.class)
+    PRINT "Net Banking transactions count: " + netBankingTransactions.size()

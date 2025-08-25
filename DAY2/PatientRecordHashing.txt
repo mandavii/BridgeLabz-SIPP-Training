@@ -1,0 +1,226 @@
+PSEUDOCODE: Patient Record Hashing (HashMap Implementation)
+
+// Patient Class
+CLASS Patient:
+    patientId: string
+    name: string
+    age: integer
+    phone: string
+    email: string
+    medicalHistory: LIST of string
+    allergies: LIST of string
+    emergencyContact: string
+    
+    CONSTRUCTOR(patientId, name, age, phone, email):
+        patientId = patientId
+        name = name
+        age = age
+        phone = phone
+        email = email
+        medicalHistory = EMPTY_LIST
+        allergies = EMPTY_LIST
+        emergencyContact = ""
+    
+    METHOD addMedicalHistory(condition: string):
+        ADD condition to medicalHistory
+    
+    METHOD addAllergy(allergy: string):
+        ADD allergy to allergies
+    
+    METHOD setEmergencyContact(contact: string):
+        emergencyContact = contact
+    
+    METHOD getPatientInfo():
+        info = "Patient ID: " + patientId + "\n"
+        info = info + "Name: " + name + "\n"
+        info = info + "Age: " + age + "\n"
+        info = info + "Phone: " + phone + "\n"
+        info = info + "Email: " + email + "\n"
+        info = info + "Medical History: " + medicalHistory.toString() + "\n"
+        info = info + "Allergies: " + allergies.toString() + "\n"
+        info = info + "Emergency Contact: " + emergencyContact
+        RETURN info
+    
+    METHOD toString():
+        RETURN "Patient{" + patientId + ": " + name + "}"
+
+// Patient Record Manager
+CLASS PatientRecordManager:
+    patients: MAP of string to Patient
+    
+    CONSTRUCTOR():
+        patients = NEW HashMap()
+    
+    METHOD addPatient(patient: Patient):
+        IF patients.containsKey(patient.patientId):
+            PRINT "Error: Patient ID " + patient.patientId + " already exists"
+            RETURN false
+        ELSE:
+            ADD patient.patientId, patient to patients
+            PRINT "Patient added successfully: " + patient.name
+            RETURN true
+    
+    METHOD getPatient(patientId: string):
+        IF patients.containsKey(patientId):
+            RETURN patients.get(patientId)
+        ELSE:
+            PRINT "Patient not found: " + patientId
+            RETURN null
+    
+    METHOD updatePatient(patientId: string, updatedPatient: Patient):
+        IF patients.containsKey(patientId):
+            patients.put(patientId, updatedPatient)
+            PRINT "Patient updated successfully: " + patientId
+            RETURN true
+        ELSE:
+            PRINT "Patient not found: " + patientId
+            RETURN false
+    
+    METHOD deletePatient(patientId: string):
+        IF patients.containsKey(patientId):
+            removed = patients.remove(patientId)
+            PRINT "Patient deleted successfully: " + patientId + " - " + removed.name
+            RETURN true
+        ELSE:
+            PRINT "Patient not found: " + patientId
+            RETURN false
+    
+    METHOD getAllPatients():
+        RETURN patients.values()
+    
+    METHOD getPatientCount():
+        RETURN patients.size()
+    
+    METHOD searchByName(name: string):
+        results = EMPTY_LIST
+        FOR each patient in patients.values():
+            IF patient.name.toLowerCase().contains(name.toLowerCase()):
+                ADD patient to results
+        RETURN results
+    
+    METHOD searchByPhone(phone: string):
+        results = EMPTY_LIST
+        FOR each patient in patients.values():
+            IF patient.phone.contains(phone):
+                ADD patient to results
+        RETURN results
+    
+    METHOD getPatientsByAgeRange(minAge: integer, maxAge: integer):
+        results = EMPTY_LIST
+        FOR each patient in patients.values():
+            IF patient.age >= minAge AND patient.age <= maxAge:
+                ADD patient to results
+        RETURN results
+    
+    METHOD getPatientsWithAllergy(allergy: string):
+        results = EMPTY_LIST
+        FOR each patient in patients.values():
+            IF patient.allergies.contains(allergy):
+                ADD patient to results
+        RETURN results
+    
+    METHOD printAllPatients():
+        PRINT "=== All Patient Records ==="
+        PRINT "Total patients: " + getPatientCount()
+        FOR each patient in patients.values():
+            PRINT patient.getPatientInfo()
+            PRINT "-------------------"
+    
+    METHOD printPatientSummary():
+        PRINT "=== Patient Summary ==="
+        PRINT "Total patients: " + getPatientCount()
+        FOR each patient in patients.values():
+            PRINT patient.toString()
+    
+    METHOD exportPatientData():
+        data = EMPTY_LIST
+        FOR each patient in patients.values():
+            patientData = MAP
+            patientData.put("patientId", patient.patientId)
+            patientData.put("name", patient.name)
+            patientData.put("age", patient.age)
+            patientData.put("phone", patient.phone)
+            patientData.put("email", patient.email)
+            patientData.put("medicalHistory", patient.medicalHistory)
+            patientData.put("allergies", patient.allergies)
+            patientData.put("emergencyContact", patient.emergencyContact)
+            ADD patientData to data
+        RETURN data
+
+// Main Program
+MAIN():
+    manager = NEW PatientRecordManager()
+    
+    // Add patients
+    patient1 = NEW Patient("P001", "Alice Johnson", 28, "1234567890", "alice@email.com")
+    patient1.addMedicalHistory("Diabetes Type 2")
+    patient1.addMedicalHistory("Hypertension")
+    patient1.addAllergy("Penicillin")
+    patient1.addAllergy("Peanuts")
+    patient1.setEmergencyContact("John Johnson - 0987654321")
+    
+    patient2 = NEW Patient("P002", "Bob Smith", 45, "2345678901", "bob@email.com")
+    patient2.addMedicalHistory("Asthma")
+    patient2.addAllergy("Dust")
+    patient2.setEmergencyContact("Mary Smith - 1987654321")
+    
+    patient3 = NEW Patient("P003", "Carol Davis", 35, "3456789012", "carol@email.com")
+    patient3.addMedicalHistory("Migraine")
+    patient3.setEmergencyContact("David Davis - 2987654321")
+    
+    patient4 = NEW Patient("P004", "David Wilson", 52, "4567890123", "david@email.com")
+    patient4.addMedicalHistory("Arthritis")
+    patient4.addMedicalHistory("High Cholesterol")
+    patient4.addAllergy("Shellfish")
+    patient4.setEmergencyContact("Lisa Wilson - 3987654321")
+    
+    // Add patients to system
+    manager.addPatient(patient1)
+    manager.addPatient(patient2)
+    manager.addPatient(patient3)
+    manager.addPatient(patient4)
+    
+    // Demonstrate CRUD operations
+    PRINT "=== Initial Patient Records ==="
+    manager.printAllPatients()
+    
+    PRINT "\n=== Retrieve Patient ==="
+    retrieved = manager.getPatient("P002")
+    IF retrieved:
+        PRINT "Found patient: " + retrieved.name
+    
+    PRINT "\n=== Update Patient ==="
+    updatedPatient = NEW Patient("P002", "Bob Smith", 46, "2345678901", "bob.smith@email.com")
+    updatedPatient.addMedicalHistory("Asthma")
+    updatedPatient.addMedicalHistory("High Blood Pressure")
+    updatedPatient.addAllergy("Dust")
+    updatedPatient.addAllergy("Pollen")
+    updatedPatient.setEmergencyContact("Mary Smith - 1987654321")
+    
+    manager.updatePatient("P002", updatedPatient)
+    
+    PRINT "\n=== Search Operations ==="
+    PRINT "Search by name 'Alice':"
+    results = manager.searchByName("Alice")
+    FOR each patient in results:
+        PRINT "  " + patient.toString()
+    
+    PRINT "Search by age range 30-50:"
+    ageResults = manager.getPatientsByAgeRange(30, 50)
+    FOR each patient in ageResults:
+        PRINT "  " + patient.toString()
+    
+    PRINT "Patients with Penicillin allergy:"
+    allergyResults = manager.getPatientsWithAllergy("Penicillin")
+    FOR each patient in allergyResults:
+        PRINT "  " + patient.toString()
+    
+    PRINT "\n=== After Operations ==="
+    manager.printPatientSummary()
+    
+    PRINT "\n=== Delete Patient ==="
+    manager.deletePatient("P004")
+    PRINT "Total patients after deletion: " + manager.getPatientCount()
+    
+    PRINT "\n=== Final Patient Records ==="
+    manager.printAllPatients()
