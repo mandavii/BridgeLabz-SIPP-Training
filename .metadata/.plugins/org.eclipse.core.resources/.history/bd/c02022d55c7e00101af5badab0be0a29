@@ -1,0 +1,39 @@
+package DAY1;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+public class StudentScore {
+
+    public static void main(String[] args) {
+        // 1. Create a HashMap to store student names and scores
+        Map<String, Integer> studentScores = new HashMap<>();
+
+        // 2. Add sample data
+        studentScores.put("Alice", 85);
+        studentScores.put("Bob", 92);
+        studentScores.put("Charlie", 78);
+        studentScores.put("Diana", 95);
+        studentScores.put("Eve", 89);
+        studentScores.put("Frank", 92);
+
+        System.out.println("Student Scores: " + studentScores);
+
+        // 3. Find the highest scorer using streams
+        // Get an Optional<Map.Entry> which may contain the highest score entry
+        Optional<Map.Entry<String, Integer>> highestScorer = studentScores.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue());
+
+        // 4. Check if the Optional has a value and print the result
+        if (highestScorer.isPresent()) {
+            Map.Entry<String, Integer> entry = highestScorer.get();
+            System.out.println("\n--- Highest Scorer ---");
+            System.out.println("Student Name: " + entry.getKey());
+            System.out.println("Score: " + entry.getValue());
+        } else {
+            System.out.println("\nNo students found in the record.");
+        }
+    }
+}

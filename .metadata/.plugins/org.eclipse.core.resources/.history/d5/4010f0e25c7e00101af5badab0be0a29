@@ -1,0 +1,65 @@
+package DAY1;
+
+import java.util.ArrayList;
+import java.util.List;
+
+// Class to represent an Employee
+class Employee {
+    String name;
+    String department;
+
+    // Constructor
+    public Employee(String name, String department) {
+        this.name = name;
+        this.department = department;
+    }
+
+    // Getter for department
+    public String getDepartment() {
+        return department;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+               "name='" + name + '\'' +
+               ", department='" + department + '\'' +
+               '}';
+    }
+}
+
+public class EmployeeRecord {
+
+    public static void main(String[] args) {
+        // 1. Create a list to store employees
+        List<Employee> employees = new ArrayList<>();
+
+        // 2. Add sample employee data
+        employees.add(new Employee("Alice", "Engineering"));
+        employees.add(new Employee("Bob", "Marketing"));
+        employees.add(new Employee("Charlie", "Engineering"));
+        employees.add(new Employee("Diana", "HR"));
+        employees.add(new Employee("Eve", "Marketing"));
+
+        System.out.println("All Employees:");
+        employees.forEach(System.out::println);
+
+        System.out.println("\n---------------------------------");
+        
+        // 3. Filter employees by department using streams
+        System.out.println("Employees in Engineering Department:");
+        
+        employees.stream()
+                 .filter(employee -> employee.getDepartment().equals("Engineering"))
+                 .forEach(System.out::println);
+                 
+        System.out.println("\n---------------------------------");
+        
+        // Example: Filtering for Marketing Department
+        System.out.println("Employees in Marketing Department:");
+        
+        employees.stream()
+                 .filter(employee -> employee.getDepartment().equals("Marketing"))
+                 .forEach(System.out::println);
+    }
+}

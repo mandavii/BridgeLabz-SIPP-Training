@@ -1,0 +1,35 @@
+package BuiltInFunction;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter; 
+
+
+public class DateTimeZone {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		
+		ZonedDateTime now = ZonedDateTime.now();
+		
+		ZoneId gmtZone = ZoneId.of("gmt");
+		ZoneId istZone = ZoneId.of("Asia");
+		ZoneId pstZone = ZonedId.of("America");
+		
+		
+		ZonedDateTime gmtTime = now.withZoneSameInstant(gmtZone);
+		ZoneDateTime istTime = now.withZoneSameInstant(istZone);
+		ZoneDateTime pstTime = now.withZoneSameInstant(pstZone);
+		
+		DateTimeFormatter formatter = DateFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+		
+		System.out.println("Current time" + now.format(formatter));
+		System.out.println("Current time GST" + gmtTime.format(formatter));
+		System.out.println("Current time IST" + istTime.format(formatter));
+		System.out.println("Current time PST" + pstTime.format(formatter));
+		
+
+	}
+
+}

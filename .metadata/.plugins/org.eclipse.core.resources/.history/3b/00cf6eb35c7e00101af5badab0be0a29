@@ -1,0 +1,78 @@
+package DAY2;
+
+// The abstract class serving as a blueprint for all crops
+abstract class Crop {
+    String name;
+
+    // Constructor to set the crop name
+    public Crop(String name) {
+        this.name = name;
+    }
+
+    // Abstract method for water requirement, must be implemented by subclasses
+    public abstract void waterRequirement();
+
+    // Abstract method for harvesting, must be implemented by subclasses
+    public abstract void harvest();
+}
+
+// Concrete class for Rice, extends Crop
+class Rice extends Crop {
+    // Constructor
+    public Rice() {
+        super("Rice");
+    }
+
+    // Implementation of the abstract waterRequirement method
+    @Override
+    public void waterRequirement() {
+        System.out.println(name + ": This crop requires a significant amount of water throughout its growth cycle.");
+    }
+
+    // Implementation of the abstract harvest method
+    @Override
+    public void harvest() {
+        System.out.println(name + ": Harvesting is typically done by hand or with machinery, followed by threshing to separate the grains.");
+    }
+}
+
+// Concrete class for Wheat, extends Crop
+class Wheat extends Crop {
+    // Constructor
+    public Wheat() {
+        super("Wheat");
+    }
+
+    // Implementation of the abstract waterRequirement method
+    @Override
+    public void waterRequirement() {
+        System.out.println(name + ": This crop requires moderate watering, especially during key growth stages.");
+    }
+
+    // Implementation of the abstract harvest method
+    @Override
+    public void harvest() {
+        System.out.println(name + ": Harvesting is done using a combine harvester, which cuts, threshes, and winnows the grain.");
+    }
+}
+
+public class FarmingSystem {
+
+    public static void main(String[] args) {
+        System.out.println("--- Simulating Smart Farming System ---");
+
+        // Create objects of the concrete classes
+        Crop rice = new Rice();
+        Crop wheat = new Wheat();
+
+        // Call methods on the objects. Polymorphism allows us to treat them as the
+        // general type Crop, but the specific method implementations are called.
+        System.out.println("\n--- Processing Rice Crop ---");
+        rice.waterRequirement();
+        rice.harvest();
+
+        System.out.println("\n--- Processing Wheat Crop ---");
+        wheat.waterRequirement();
+        wheat.harvest();
+    }
+}

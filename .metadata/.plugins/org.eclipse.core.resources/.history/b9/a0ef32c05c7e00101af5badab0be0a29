@@ -1,0 +1,51 @@
+package DAY2;
+
+import java.util.concurrent.TimeUnit;
+
+// Enum for TrafficLight with a duration attribute
+enum TrafficLight {
+    RED(10),    // Red light stays on for 10 seconds
+    YELLOW(3),  // Yellow for 3 seconds
+    GREEN(15);  // Green for 15 seconds
+
+    private int duration; // Duration in seconds
+
+    // Constructor for the enum constants
+    TrafficLight(int duration) {
+        this.duration = duration;
+    }
+
+    // Getter method to retrieve the duration
+    public int getDuration() {
+        return this.duration;
+    }
+}
+
+public class TrafficSignal {
+
+    public static void main(String[] args) {
+        System.out.println("Starting Traffic Signal Simulation...");
+        startSimulation();
+    }
+
+    // Method to simulate the traffic signal logic
+    public static void startSimulation() {
+        // Get all enum constants
+        TrafficLight[] lights = TrafficLight.values();
+
+        while (true) {
+            for (TrafficLight light : lights) {
+                System.out.println("The light is " + light + ". Wait for " + light.getDuration() + " seconds.");
+                
+                try {
+                    // Pause the thread for the light's duration
+                    TimeUnit.SECONDS.sleep(light.getDuration());
+                } catch (InterruptedException e) {
+                    System.out.println("Simulation interrupted.");
+                    Thread.currentThread().interrupt(); // Restore the interrupted status
+                    return;
+                }
+            }
+        }
+    }
+}

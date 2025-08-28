@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;BridgeLabzzGenerics&apos;" deleteContents="false" description="Delete resource &apos;BridgeLabzzGenerics&apos;" element1="/BridgeLabzzGenerics" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1753618363413"/>&#x0A;<refactoring comment="Delete resource &apos;BridgeLabzWorkshop&apos;" deleteContents="false" description="Delete resource &apos;BridgeLabzWorkshop&apos;" element1="/BridgeLabzWorkshop" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1753618368175"/>
+</session>

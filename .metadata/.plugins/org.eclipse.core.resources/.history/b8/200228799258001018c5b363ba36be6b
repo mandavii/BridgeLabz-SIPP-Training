@@ -1,0 +1,26 @@
+public class StringOccu {
+
+    public static void main(String[] args) {
+        String text = "Hello World! 123 Java Program.";
+
+        String lowerCaseText = text.toLowerCase();
+
+        int[] counts = new int[26];
+
+        for (int i = 0; i < lowerCaseText.length(); i++) {
+            char ch = lowerCaseText.charAt(i);
+
+            if (ch >= 'a' && ch <= 'z') {
+                int index = ch - 'a';
+                counts[index]++;
+            }
+        }
+        for (int i = 0; i < counts.length; i++) {
+            char alphabetChar = (char) ('a' + i);
+
+            if (counts[i] > 0) {
+                System.out.println("Char" + alphabetChar  + counts[i]);
+            }
+        }
+    }
+}

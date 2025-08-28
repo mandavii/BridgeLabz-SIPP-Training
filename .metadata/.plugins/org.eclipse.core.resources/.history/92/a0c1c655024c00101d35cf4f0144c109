@@ -1,0 +1,37 @@
+package CoreJavaMethods;
+
+import java.util.Scanner;
+public class SimpleIntrest {
+	
+	public static double SIFormula(double pri, double rate, double time) {
+		double SI = pri *rate*time/ 100;
+		return SI;
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner input = new Scanner(System.in);
+		System.out.println("Enter principal");
+		double principal = input.nextDouble();
+		
+		System.out.println("Enter rate");
+		double rate1 = input.nextDouble();
+		
+		System.out.println("Enter time");
+		double time1 = input.nextDouble();
+		
+		if(principal <0 || rate1 <0|| time1 <0) {
+			System.out.println("no negative");
+		}
+		
+		else {
+			double FinalValue = SI(principal, rate1, time1);
+			System.out.println("final answer" + FinalValue);
+		}
+		
+		input.close();
+		
+
+	}
+
+}

@@ -1,0 +1,16 @@
+package CoreJavaMethods;
+
+public class RemainderAndQuotient {
+
+	public static int[] findRemainderAndQuotient(int number, int divisor) {
+		int[] result = new int[2];
+		
+		
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,14 @@
+
+public class StringOccu {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		String s = "Java Programm";
+		int totalcount = s.length();
+		int totalcountRemove = s.replace("a","").length();
+		int count = totalcount - totalcountRemove;
+		System.out.println(count);
+	}
+
+}

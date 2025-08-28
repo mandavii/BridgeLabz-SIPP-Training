@@ -1,0 +1,39 @@
+package BuiltInFunction;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class DateTimeZone {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+
+		ZonedDateTime now = ZonedDateTime.now();
+
+		// *** CRITICAL CORRECTIONS FOR ZoneId.of() ***
+		// Use "GMT" for Greenwich Mean Time
+		ZoneId gmtZone = ZoneId.of("GMT");
+		// Use a specific ZoneId for Indian Standard Time (IST)
+		ZoneId istZone = ZoneId.of("Asia/Kolkata"); // This is the correct ZoneId for IST
+		// Use a specific ZoneId for Pacific Standard Time (PST)
+		ZoneId pstZone = ZoneId.of("America/Los_Angeles"); // This is a common ZoneId for PST
+
+
+		ZonedDateTime gmtTime = now.withZoneSameInstant(gmtZone);
+		ZonedDateTime istTime = now.withZoneSameInstant(istZone);
+		ZonedDateTime pstTime = now.withZoneSameInstant(pstZone);
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+
+		// Added "(Local)" for clarity and corrected the "GST" label
+		System.out.println("Current time (Local): " + now.format(formatter));
+		System.out.println("Current time GMT:     " + gmtTime.format(formatter)); // Changed GST to GMT
+		System.out.println("Current time IST:     " + istTime.format(formatter));
+		System.out.println("Current time PST:     " + pstTime.format(formatter));
+
+
+	}
+
+}

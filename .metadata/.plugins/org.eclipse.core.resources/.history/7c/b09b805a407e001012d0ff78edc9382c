@@ -1,0 +1,97 @@
+package DAY1;
+
+// Parent class
+class Pet {
+    // Attributes
+    String name;
+    int age;
+    String breed;
+
+    // Constructor
+    public Pet(String name, int age, String breed) {
+        this.name = name;
+        this.age = age;
+        this.breed = breed;
+    }
+
+    // Method to display a pet's details
+    public void displayDetails() {
+        System.out.println("Name: " + this.name);
+        System.out.println("Age: " + this.age);
+        System.out.println("Breed: " + this.breed);
+    }
+}
+
+// Child class inheriting from Pet
+class Dog extends Pet {
+    boolean isTrained;
+
+    // Constructor with an additional parameter
+    public Dog(String name, int age, String breed, boolean isTrained) {
+        super(name, age, breed);
+        this.isTrained = isTrained;
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Is Trained: " + this.isTrained);
+    }
+}
+
+// Child class inheriting from Pet
+class Cat extends Pet {
+    boolean likesToCuddle;
+
+    public Cat(String name, int age, String breed, boolean likesToCuddle) {
+        super(name, age, breed);
+        this.likesToCuddle = likesToCuddle;
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Likes to Cuddle: " + this.likesToCuddle);
+    }
+}
+
+// Child class inheriting from Pet
+class Bird extends Pet {
+    boolean canFly;
+
+    public Bird(String name, int age, String breed, boolean canFly) {
+        super(name, age, breed);
+        this.canFly = canFly;
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Can Fly: " + this.canFly);
+    }
+}
+
+// Main class to demonstrate the program
+public class PetAdoption {
+
+    public static void main(String[] args) {
+        // Create an object of Dog
+        Dog myDog = new Dog("Buddy", 3, "Golden Retriever", true);
+        System.out.println("--- Dog Details ---");
+        myDog.displayDetails();
+
+        System.out.println(); // Add a blank line
+
+        // Create an object of Cat
+        Cat myCat = new Cat("Whiskers", 2, "Siamese", true);
+        System.out.println("--- Cat Details ---");
+        myCat.displayDetails();
+
+        System.out.println();
+
+        // Create an object of Bird
+        Bird myBird = new Bird("Polly", 1, "Parakeet", true);
+        System.out.println("--- Bird Details ---");
+        myBird.displayDetails();
+    }
+}

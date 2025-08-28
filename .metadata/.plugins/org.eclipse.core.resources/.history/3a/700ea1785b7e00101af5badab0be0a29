@@ -1,0 +1,55 @@
+package DAY1;
+
+import java.util.Stack;
+
+public class UndoFeature {
+
+    // A Stack to store the history of text states
+    private static Stack<String> undoStack = new Stack<>();
+    
+    // The current text content
+    private static String currentText = "";
+
+    // Method to add a new operation (e.g., type something)
+    public static void type(String newText) {
+        // Push the old state before the change
+        undoStack.push(currentText);
+        // Update the current text with the new content
+        currentText = newText;
+        System.out.println("Current Text: " + currentText);
+        System.out.println("--- State saved ---");
+    }
+
+    // Method to revert to the previous state
+    public static void undo() {
+        if (!undoStack.isEmpty()) {
+            // Pop the last saved state from the stack
+            String previousState = undoStack.pop();
+            // Update the current text to the previous state
+            currentText = previousState;
+            System.out.println("Undo successful. Current Text: " + currentText);
+        } else {
+            System.out.println("Cannot undo. The stack is empty.");
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Starting text editor simulation.");
+        
+        // Simulating typing operations
+        type("Hello");
+        type("Hello World");
+        type("Hello World! This is an example.");
+        
+        System.out.println("\n--- Performing Undo Operations ---");
+        
+        // Undo the last operation
+        undo();
+        
+        // Undo the previous operation
+        undo();
+        
+        // Try to undo again when the stack is empty
+        undo();
+    }
+}

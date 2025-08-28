@@ -1,0 +1,44 @@
+package BuiltInFunction;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+public class DateArithmetic {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("YYYY-MM-DD");
+		String dateString = scanner.nextLine();
+		
+		LocalDate initialDate = null;
+		try {
+			DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("YYYY-MM-DD");
+			initialDate = LocalDate.parse(dateString, inputFormatter);
+			System.out.println("Initial Date"+ initialDate);
+		}
+		catch (java.time.format.DateTimeParseException e) {
+			System.out.println("Invalid");
+			scanner.close();
+			return;
+		}
+
+		
+		LocalDate dateAfterAdditions = initialDate.plusDays(7)
+                .plusMonths(1)
+                .plusYears(2);
+System.out.println("Date after adding 7 days, 1 month, 2 years: " + dateAfterAdditions);
+
+
+// 3. Subtract 3 weeks from the result
+LocalDate finalDate = dateAfterAdditions.minusWeeks(3);
+System.out.println("Final date after subtracting 3 weeks: " + finalDate);
+
+
+scanner.close();
+	}
+
+}
